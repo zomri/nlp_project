@@ -42,7 +42,7 @@ public class Truncate {
 		}
 		for (int i = 0; i < filesContent.get(0).size(); i++) {
 			int j = i;
-			if (filesContent.stream().anyMatch(content -> content.get(j).length() > cliArgs.maxTokens)) {
+			if (filesContent.stream().anyMatch(content -> content.get(j).split(" ").length > cliArgs.maxTokens)) {
 				//dropping line
 			} else {
 				for (int k = 0; k < filesWriters.size(); k++) {
