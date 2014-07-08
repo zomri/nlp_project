@@ -1,0 +1,17 @@
+http://www-users.cs.umn.edu/~bthomson/wordalignment/GIZAREADME.txt
+
+- giza-pp/GIZA++-v2//plain2snt.out bible.heb bible.eng
+- giza-pp/mkcls-v2/mkcls -pbible.eng -Vbible.eng.vcb.classes
+- giza-pp/mkcls-v2/mkcls -pbible.heb -Vbible.heb.vcb.classes
+- giza-pp/GIZA++-v2/GIZA++ -T bible.heb.vcb -S bible.eng.vcb -C bible.heb_head.bible.eng.snt
+ (getting error..)
+ 
+
+
+
+giza-pp/GIZA++-v2//plain2snt.out head20.bible.heb head20.bible.eng
+giza-pp/mkcls-v2/mkcls -phead20.bible.eng -Vhead20.bible.eng.vcb.classes
+giza-pp/mkcls-v2/mkcls -phead20.bible.heb -Vhead20.bible.heb.vcb.classes
+giza-pp/GIZA++-v2/GIZA++ -T head20.bible.heb.vcb -S head20.bible.eng.vcb -C head20.bible.heb_head.bible.eng.snt
+ 
+ 
