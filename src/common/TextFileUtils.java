@@ -100,4 +100,8 @@ public class TextFileUtils {
 		return $;
 	}
 
+	public static OutputStreamWriter getWriter(String file) {
+		return getWriter(new File(file));
+	}
+
 }
