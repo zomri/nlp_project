@@ -2,10 +2,16 @@ package phrase_table;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Reads s->t and t->s alignment from A3 files - creates alignment matrix out of it 
@@ -22,14 +28,16 @@ public class AlignedSentenceReader {
 		//a2b.srcAlignment - a words + alignment to b
 
 		AlignmentMatrix am = new AlignmentMatrix();
-		int[][] matrix = new int[a2b.getSrcNumWords()+1][b2a.getSrcNumWords()+1]; //+1 for NULL word
+		//int[][] matrix = new int[a2b.getSrcNumWords()+1][b2a.getSrcNumWords()+1]; //+1 for NULL word
 
-		//TODO - read A3 sentence, fill matrix according to alignment
+	
 		//Currently ignore NULL entry and empty entries 
 		Pattern p = Pattern.compile(" ");
 		List<String> bWords = Arrays.asList(p.split(a2b.getDst()));
 		List<String> aWords = Arrays.asList(p.split(b2a.getDst()));
 
+		Map<Integer,Set<Integer>> src2targetAlign = initAlignMapMaps(aWords.size());
+		Map<Integer,Set<Integer>> target2srcAlign = initAlignMapMaps(bWords.size());
 
 		//example: " Also ({ 1 }) for ({ }) "
 
@@ -45,14 +53,24 @@ public class AlignedSentenceReader {
 			//System.out.println("item = `" + m.group() + "`");
 			Scanner sc = new Scanner(token);
 			String word = sc.next("\\S*");
-			while (sc.hasNext()) {
-				if (sc.hasNextInt()) {
-					int alignIdx =sc.nextInt(); 
-					matrix[idx][alignIdx] = 1;
+
+			//Ignoring NULL word - don't think we need it
+			if (!word.equals("NULL")) {
+				while (sc.hasNext()) {
+					if (sc.hasNextInt()) {
+						int alignIdx =sc.nextInt(); 
+						//alignments.add(alignIdx-1); //-1 = indexing start at 0..
+						src2targetAlign.get(idx).add(alignIdx-1);
+						target2srcAlign.get(alignIdx-1).add(idx);
+						//matrix[idx][alignIdx] = 1;
+						
+					}
+					sc.next();
 				}
-				sc.next();
+				//src2targetAlign.put(idx, alignments);
+				idx++;
 			}
-			idx++;
+			
 		}
 
 		m = p.matcher(b2a.getSrcAlignment()) ;  
@@ -62,23 +80,42 @@ public class AlignedSentenceReader {
 			//System.out.println("item = `" + m.group() + "`");
 			Scanner sc = new Scanner(token);
 			String word = sc.next("\\S*");
-			while (sc.hasNext()) {
-				if (sc.hasNextInt()) {
-					int alignIdx =sc.nextInt(); 
-					matrix[alignIdx][idx] = 1;
+			//Ignoring NULL word - don't think we need it
+			if (!word.equals("NULL")) {
+				while (sc.hasNext()) {
+					if (sc.hasNextInt()) {
+						int alignIdx =sc.nextInt(); 
+						//alignments.add(alignIdx-1); //-1 = indexing start at 0..
+						//matrix[alignIdx][idx] = 1;
+						target2srcAlign.get(idx).add(alignIdx-1);
+						src2targetAlign.get(alignIdx-1).add(idx);
+						
+					}
+					sc.next();
 				}
-				sc.next();
+				//target2srcAlign.put(idx, alignments);
+				idx++;
 			}
-			idx++;
+			
 		}
-		//String [] abSrcAlignmentWords = p.split(ab.getSrcAlignment());
-		//TODO- parse each slignment string (word and its corresponding indexes)
-		//using Scanner
-
-		am.setAlignmentMatrix(matrix);
+	
+		am.setSrc2TargetAlignment(src2targetAlign);
+		am.setTarget2SrcAlignment(target2srcAlign);
 		am.setSrcWords(aWords);
 		am.setTargetWords(bWords);
 		return am;
+	}
+
+	private Map<Integer, Set<Integer>> initAlignMapMaps(int size) {
+		// add all integers between [0,size] and create empty set
+		Map<Integer, Set<Integer>> res = Maps.newHashMap();
+		
+		for (int i=0; i<size; ++i) 
+		{
+			res.put(i, Sets.newTreeSet()); //TreeSet - sorted..
+		}
+		
+		return res;
 	}
 
 }
