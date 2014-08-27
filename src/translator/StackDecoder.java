@@ -32,16 +32,11 @@ public class StackDecoder {
 				for (Hypothesis translationOption : trasnlations) {
 					translationOption.prev().add(hypothesis);
 					hypothesis.next().add(translationOption);
-					stacks.get(stackIndex + 1).add(translationOption);
+					int newStackIndex = stackIndex + translationOption.words().size();
+					stacks.get(newStackIndex).add(translationOption);
+//					recombine with existing hypothesis if possible
+//					prune stack if too big
 				}
-//				for all translation options do
-//					if applicable then
-//						--create new hypothesis--
-//						--place in stack--
-//						recombine with existing hypothesis if possible
-//						prune stack if too big
-//					end if
-//				end for
 			}
 		}
 		return getTranslationFromStacks();
@@ -55,7 +50,7 @@ public class StackDecoder {
 		if (coverage.stream().allMatch(x -> x)) {
 			return Lists.newArrayList();
 		}
-		List<String> words = pickNext(coverage);
+		List<String> words = pickNextOrigin(coverage);
 		$.add(new Hypothesis(phraseTranslator.getTranslation(words), calcNewCoverage(hypothesis.coverage(), words)));
 		return $;
 	}
@@ -79,8 +74,13 @@ public class StackDecoder {
 		return -1;
 	}
 
-	private List<String> pickNext(List<Boolean> coverage) {
-		return Lists.newArrayList("a");
+	private List<String> pickNextOrigin(List<Boolean> coverage) {
+		for (int i = 0; i < coverage.size(); i++) {
+			if (!coverage.get(i)) {
+				return Lists.newArrayList(origin.get(i));
+			}
+		}
+		return Lists.newArrayList();
 	}
 
 	private List<String> getTranslationFromStacks() {
