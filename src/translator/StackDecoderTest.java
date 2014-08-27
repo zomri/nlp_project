@@ -39,12 +39,22 @@ public class StackDecoderTest {
 		List<String> translated = tested.translate();
 		assertEquals(Lists.newArrayList("b"), translated);
 	}
+	@Test
+	public void testRecombine() {
+		origin.add("hambre");
+		origin.add("tengo");
+		phraseTranslator.putTranslation("tengo", "am", 100);
+		phraseTranslator.putTranslation("hambre", "hungry", 103);
+		phraseTranslator.putTranslation("hambre", "hunger", 102);
+		createdTested();
+		List<String> translated = tested.translate();
+		assertEquals(Lists.newArrayList("hungry", "am"), translated);
+	}
 	private void createdTested() {
 		tested = new StackDecoder(origin, phraseTranslator);
 	}
 
 	//test steps of few words
-	//test multiple translations
-	//test with score
-	//test prune and recombine
+	//test with scoring algorithm from model
+	//test prune
 }
