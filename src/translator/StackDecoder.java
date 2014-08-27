@@ -9,25 +9,35 @@ import com.beust.jcommander.internal.Lists;
 public class StackDecoder {
 
 	private List<String> origin;
-	
 	private List<SortedSet<Hypothesis>> stacks = Lists.newArrayList();
+	private PhraseTranslator phraseTranslator;
 	
-	public StackDecoder(List<String> origin) {
+	public StackDecoder(List<String> origin, PhraseTranslator phraseTranslator) {
 		super();
 		this.origin = origin;
-		for (int i = 0; i < origin.size(); i++) {
+		this.phraseTranslator = phraseTranslator;
+		for (int i = 0; i < origin.size()+1; i++) {
 			stacks.add(new TreeSet<>());
 		}
 	}
 
 	public List<String> translate(){
-		stacks.get(0).add(new Hypothesis());
+		if (null == origin || origin.isEmpty()) {
+			return Lists.newArrayList();
+		}
+		stacks.get(0).add(new Hypothesis(origin.size()));
 		for (int stackIndex = 0; stackIndex < stacks.size(); stackIndex++) {
 			for (Hypothesis hypothesis : stacks.get(stackIndex)) {
+				List<Hypothesis> trasnlations = getAllHypothesis(hypothesis);
+				for (Hypothesis translationOption : trasnlations) {
+					translationOption.prev().add(hypothesis);
+					hypothesis.next().add(translationOption);
+					stacks.get(stackIndex + 1).add(translationOption);
+				}
 //				for all translation options do
 //					if applicable then
-//						create new hypothesis
-//						place in stack
+//						--create new hypothesis--
+//						--place in stack--
 //						recombine with existing hypothesis if possible
 //						prune stack if too big
 //					end if
@@ -39,8 +49,54 @@ public class StackDecoder {
 
 
 
+	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
+		List<Hypothesis> $ = Lists.newArrayList();
+		List<Boolean> coverage = hypothesis.coverage();
+		if (coverage.stream().allMatch(x -> x)) {
+			return Lists.newArrayList();
+		}
+		List<String> words = pickNext(coverage);
+		$.add(new Hypothesis(phraseTranslator.getTranslation(words), calcNewCoverage(hypothesis.coverage(), words)));
+		return $;
+	}
+
+	private List<Boolean> calcNewCoverage(List<Boolean> coverage, List<String> words) {
+		List<Boolean> $ = Lists.newArrayList(coverage);
+		for (String word : words) {
+			int index = findUncoveredIndex($, word);
+			$.remove(index);
+			$.add(index, true);
+		}
+		return $;
+	}
+
+	private int findUncoveredIndex(List<Boolean> coverage, String word) {
+		for (int i = 0; i < coverage.size(); i++) {
+			if (!coverage.get(i) && origin.get(i).equals(word)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private List<String> pickNext(List<Boolean> coverage) {
+		return Lists.newArrayList("a");
+	}
+
 	private List<String> getTranslationFromStacks() {
 		List<String> translation = Lists.newArrayList();
+		Hypothesis last = stacks.get(stacks.size()-1).first();
+		boolean finished = false;
+		while (!finished){
+			translation.addAll(0, last.words());
+			List<Hypothesis> prev = last.prev();
+			if (prev.isEmpty()) {
+				finished = true;
+			}
+			else {
+				last = prev.get(0);
+			}
+		}
 		return translation;
 	}
 }
