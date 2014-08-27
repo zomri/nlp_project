@@ -12,9 +12,10 @@ public class Hypothesis implements Comparable<Hypothesis>{
 	private List<Boolean> coverage = Lists.newArrayList();
 	private double score;
 	
-	public Hypothesis(List<String> words, List<Boolean> coverage) {
+	public Hypothesis(TranslationWithScore translationWithScore, List<Boolean> coverage) {
 		this.coverage = coverage;
-		this.words = words;
+		this.words = translationWithScore.words();
+		this.score = translationWithScore.score();
 	}
 
 //	public Hypothesis() {
@@ -44,7 +45,7 @@ public class Hypothesis implements Comparable<Hypothesis>{
 
 	@Override
 	public int compareTo(Hypothesis o) {
-		return 0;
+		return Double.compare(totalScore(), o.totalScore());
 	}
 
 	@Override
@@ -55,6 +56,10 @@ public class Hypothesis implements Comparable<Hypothesis>{
 
 	public List<Boolean> coverage() {
 		return coverage;
+	}
+
+	public double score() {
+		return score;
 	}
 	
 	

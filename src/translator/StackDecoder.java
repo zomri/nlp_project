@@ -1,5 +1,6 @@
 package translator;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -12,9 +13,9 @@ public class StackDecoder {
 	private static final int MAX_STACK_SIZE = 10;
 	private List<String> origin;
 	private List<SortedSet<Hypothesis>> stacks = Lists.newArrayList();
-	private PhraseTranslator phraseTranslator;
+	private LatticePhraseTranslator phraseTranslator;
 	
-	public StackDecoder(List<String> origin, PhraseTranslator phraseTranslator) {
+	public StackDecoder(List<String> origin, LatticePhraseTranslator phraseTranslator) {
 		super();
 		this.origin = origin;
 		this.phraseTranslator = phraseTranslator;
@@ -70,13 +71,14 @@ public class StackDecoder {
 	private void pruneStack(int newStackIndex) {
 		SortedSet<Hypothesis> stack = stacks.get(newStackIndex);
 		if (stack.size() > MAX_STACK_SIZE) {
-			stack.remove(stack.last());
+			stack.remove(stack.first());
 		}
 	}
 
 	private void updateScore(Hypothesis translationOption) {
 		// TODO Auto-generated method stub
-		
+		//at this point score only contains lattice score
+		double latticeScore = translationOption.score();
 	}
 
 	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
@@ -86,7 +88,11 @@ public class StackDecoder {
 			return Lists.newArrayList();
 		}
 		List<String> words = pickNextOrigin(coverage);
-		$.add(new Hypothesis(phraseTranslator.getTranslation(words), calcNewCoverage(hypothesis.coverage(), words)));
+		List<Boolean> newCoverage = calcNewCoverage(hypothesis.coverage(), words);
+		Collection<TranslationWithScore> translations = phraseTranslator.getTranslation(words);
+		for (TranslationWithScore translationWithScore : translations) {
+			$.add(new Hypothesis(translationWithScore, newCoverage));
+		}
 		return $;
 	}
 
@@ -120,7 +126,7 @@ public class StackDecoder {
 
 	private List<String> getTranslationFromStacks() {
 		List<String> translation = Lists.newArrayList();
-		Hypothesis last = stacks.get(stacks.size()-1).first();
+		Hypothesis last = stacks.get(stacks.size()-1).last();
 		boolean finished = false;
 		while (!finished){
 			translation.addAll(0, last.words());
