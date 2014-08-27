@@ -26,6 +26,10 @@ public class Hypothesis implements Comparable<Hypothesis>{
 			coverage.add(false);
 		}
 	}
+	
+	public double totalScore() {
+		return score + prev.stream().mapToDouble(x->x.totalScore()).max().orElse(0);
+	}
 
 	public List<Hypothesis> prev() {
 		return prev;

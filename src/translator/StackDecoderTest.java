@@ -36,4 +36,6 @@ public class StackDecoderTest {
 
 	//test steps of few words
 	//test multiple translations
+	//test with score
+	//test prune and recombine
 }

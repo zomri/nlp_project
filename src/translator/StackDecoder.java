@@ -1,5 +1,6 @@
 package translator;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -8,6 +9,7 @@ import com.beust.jcommander.internal.Lists;
 
 public class StackDecoder {
 
+	private static final int MAX_STACK_SIZE = 10;
 	private List<String> origin;
 	private List<SortedSet<Hypothesis>> stacks = Lists.newArrayList();
 	private PhraseTranslator phraseTranslator;
@@ -32,17 +34,50 @@ public class StackDecoder {
 				for (Hypothesis translationOption : trasnlations) {
 					translationOption.prev().add(hypothesis);
 					hypothesis.next().add(translationOption);
+					updateScore(translationOption);
 					int newStackIndex = stackIndex + translationOption.words().size();
 					stacks.get(newStackIndex).add(translationOption);
-//					recombine with existing hypothesis if possible
-//					prune stack if too big
+					recombine(newStackIndex);
+					pruneStack(newStackIndex);
 				}
 			}
 		}
 		return getTranslationFromStacks();
 	}
 
+	private void recombine(int newStackIndex) {
+		SortedSet<Hypothesis> stack = stacks.get(newStackIndex);
+		List<Hypothesis> allHypothesis = Lists.newArrayList(stack);
+		for (Hypothesis hypothesis : allHypothesis) {
+			Iterator<Hypothesis> iterator = stack.headSet(hypothesis).iterator();
+			while (iterator.hasNext()) {
+				Hypothesis h = iterator.next();
+				if (h.coverage().equals(hypothesis.coverage())
+						&& h.words().equals(hypothesis.words())) {
+					iterator.remove();
+					List<Hypothesis> pointers = h.prev();
+					for (Hypothesis prevH : pointers) {
+						prevH.next().remove(h);
+						prevH.next().add(hypothesis);
+					}
+					hypothesis.prev().addAll(pointers);
+				}
+			}
+		}
+		
+	}
 
+	private void pruneStack(int newStackIndex) {
+		SortedSet<Hypothesis> stack = stacks.get(newStackIndex);
+		if (stack.size() > MAX_STACK_SIZE) {
+			stack.remove(stack.last());
+		}
+	}
+
+	private void updateScore(Hypothesis translationOption) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
 		List<Hypothesis> $ = Lists.newArrayList();
