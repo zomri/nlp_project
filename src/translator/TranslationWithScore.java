@@ -2,7 +2,8 @@ package translator;
 
 import java.util.List;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
+
 
 public class TranslationWithScore {
 
@@ -10,7 +11,11 @@ public class TranslationWithScore {
 	private double score;
 
 	public TranslationWithScore(String value, double score) {
-		this.words = Lists.newArrayList(value);
+		this(Lists.newArrayList(value), score);
+	}
+
+	public TranslationWithScore(List<String> words, double score) {
+		this.words = words;
 		this.score = score;
 	}
 

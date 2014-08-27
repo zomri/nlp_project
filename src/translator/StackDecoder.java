@@ -11,6 +11,7 @@ import com.beust.jcommander.internal.Lists;
 public class StackDecoder {
 
 	private static final int MAX_STACK_SIZE = 10;
+	private static final int MAX_TRANSLATE_SEQUENCE = 5;
 	private List<String> origin;
 	private List<SortedSet<Hypothesis>> stacks = Lists.newArrayList();
 	private LatticePhraseTranslator phraseTranslator;
@@ -54,7 +55,7 @@ public class StackDecoder {
 			while (iterator.hasNext()) {
 				Hypothesis h = iterator.next();
 				if (h.coverage().equals(hypothesis.coverage())
-						&& h.words().equals(hypothesis.words())) {
+						&& h.translation().equals(hypothesis.translation())) {
 					iterator.remove();
 					List<Hypothesis> pointers = h.prev();
 					for (Hypothesis prevH : pointers) {
@@ -87,11 +88,13 @@ public class StackDecoder {
 		if (coverage.stream().allMatch(x -> x)) {
 			return Lists.newArrayList();
 		}
-		List<String> words = pickNextOrigin(coverage);
-		List<Boolean> newCoverage = calcNewCoverage(hypothesis.coverage(), words);
-		Collection<TranslationWithScore> translations = phraseTranslator.getTranslation(words);
-		for (TranslationWithScore translationWithScore : translations) {
-			$.add(new Hypothesis(translationWithScore, newCoverage));
+		List<List<String>> wordsList = pickNextOrigins(coverage);
+		for (List<String> words : wordsList) {
+			List<Boolean> newCoverage = calcNewCoverage(hypothesis.coverage(), words);
+			Collection<TranslationWithScore> translations = phraseTranslator.getTranslation(words);
+			for (TranslationWithScore translationWithScore : translations) {
+				$.add(new Hypothesis(words, translationWithScore, newCoverage));
+			}
 		}
 		return $;
 	}
@@ -115,13 +118,22 @@ public class StackDecoder {
 		return -1;
 	}
 
-	private List<String> pickNextOrigin(List<Boolean> coverage) {
+	private List<List<String>> pickNextOrigins(List<Boolean> coverage) {
+		List<List<String>> $ = Lists.newArrayList();
 		for (int i = 0; i < coverage.size(); i++) {
+			for (int j = i + 1; j <= coverage.size() && j - i <= MAX_TRANSLATE_SEQUENCE; j++) {
+				if (coverage.get(j-1)) {
+					//already covered word
+					break;
+				}
+				$.add(Lists.newArrayList(origin.subList(i, j)));
+			}
 			if (!coverage.get(i)) {
-				return Lists.newArrayList(origin.get(i));
+				//found not covered word, finish
+				break;
 			}
 		}
-		return Lists.newArrayList();
+		return $;
 	}
 
 	private List<String> getTranslationFromStacks() {
@@ -129,7 +141,7 @@ public class StackDecoder {
 		Hypothesis last = stacks.get(stacks.size()-1).last();
 		boolean finished = false;
 		while (!finished){
-			translation.addAll(0, last.words());
+			translation.addAll(0, last.translation());
 			List<Hypothesis> prev = last.prev();
 			if (prev.isEmpty()) {
 				finished = true;

@@ -50,11 +50,21 @@ public class StackDecoderTest {
 		List<String> translated = tested.translate();
 		assertEquals(Lists.newArrayList("hungry", "am"), translated);
 	}
+	@Test
+	public void testMultiSteps() {
+		origin.add("a");
+		origin.add("b");
+		phraseTranslator.putTranslation("a", "aa", 1);
+		phraseTranslator.putTranslation("b", "bb", 1);
+		phraseTranslator.putTranslation(Lists.newArrayList("a", "b"), Lists.newArrayList("ab"), 100);
+		createdTested();
+		List<String> translated = tested.translate();
+		assertEquals(Lists.newArrayList("ab"), translated);
+	}
 	private void createdTested() {
 		tested = new StackDecoder(origin, phraseTranslator);
 	}
 
-	//test steps of few words
 	//test with scoring algorithm from model
 	//test prune
 }

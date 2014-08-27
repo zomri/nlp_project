@@ -8,13 +8,15 @@ public class Hypothesis implements Comparable<Hypothesis>{
 
 	private List<Hypothesis> prev = Lists.newArrayList();
 	private List<Hypothesis> next = Lists.newArrayList();
-	private List<String> words = Lists.newArrayList();
+	private List<String> translation = Lists.newArrayList();
 	private List<Boolean> coverage = Lists.newArrayList();
+	private List<String> words = Lists.newArrayList();
 	private double score;
 	
-	public Hypothesis(TranslationWithScore translationWithScore, List<Boolean> coverage) {
+	public Hypothesis(List<String> words, TranslationWithScore translationWithScore, List<Boolean> coverage) {
+		this.words = words;
 		this.coverage = coverage;
-		this.words = translationWithScore.words();
+		this.translation = translationWithScore.words();
 		this.score = translationWithScore.score();
 	}
 
@@ -39,8 +41,8 @@ public class Hypothesis implements Comparable<Hypothesis>{
 		return next;
 	}
 
-	public List<String> words() {
-		return words;
+	public List<String> translation() {
+		return translation;
 	}
 
 	@Override
@@ -50,8 +52,12 @@ public class Hypothesis implements Comparable<Hypothesis>{
 
 	@Override
 	public String toString() {
-		return "Hypothesis [words=" + words + ", coverage=" + coverage
-				+ ", score=" + score + "]";
+		return "Hypothesis ["
+				+ (words != null ? "words=" + words + ", " : "")
+				+ (translation != null ? "translation=" + translation + ", "
+						: "")
+				+ (coverage != null ? "coverage=" + coverage + ", " : "")
+				+ "score=" + score + ", totalScore()=" + totalScore() + "]";
 	}
 
 	public List<Boolean> coverage() {
@@ -60,6 +66,10 @@ public class Hypothesis implements Comparable<Hypothesis>{
 
 	public double score() {
 		return score;
+	}
+
+	public List<String> words() {
+		return words;
 	}
 	
 	
