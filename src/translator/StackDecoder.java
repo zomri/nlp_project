@@ -20,16 +20,13 @@ public class StackDecoder {
 		super();
 		this.origin = origin;
 		this.phraseTranslator = phraseTranslator;
-		for (int i = 0; i < origin.size()+1; i++) {
-			stacks.add(new TreeSet<>());
-		}
 	}
 
 	public List<String> translate(){
 		if (null == origin || origin.isEmpty()) {
 			return Lists.newArrayList();
 		}
-		stacks.get(0).add(new Hypothesis(origin.size()));
+		init();
 		for (int stackIndex = 0; stackIndex < stacks.size(); stackIndex++) {
 			for (Hypothesis hypothesis : stacks.get(stackIndex)) {
 				List<Hypothesis> trasnlations = getAllHypothesis(hypothesis);
@@ -45,6 +42,13 @@ public class StackDecoder {
 			}
 		}
 		return getTranslationFromStacks();
+	}
+
+	private void init() {
+		for (int i = 0; i < origin.size()+1; i++) {
+			stacks.add(new TreeSet<>());
+		}
+		stacks.get(0).add(new Hypothesis(origin.size()));
 	}
 
 	private void recombine(int newStackIndex) {

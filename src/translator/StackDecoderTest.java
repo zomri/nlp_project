@@ -1,9 +1,10 @@
 package translator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.beust.jcommander.internal.Lists;
@@ -14,11 +15,14 @@ public class StackDecoderTest {
 	private LatticePhraseTranslator phraseTranslator = new LatticePhraseTranslator();
 	private StackDecoder tested;
 	
+	@Before
+	public void before() {
+		createdTested();
+	}
+	
 	@Test
 	public void testEmpty() {
-		createdTested();
-		List<String> translated = tested.translate();
-		assertEquals(Lists.newArrayList(), translated);
+		assertEquals(Lists.newArrayList(), tested.translate());
 	}
 	@Test
 	public void testVerySimpleTranslation() {
@@ -26,18 +30,14 @@ public class StackDecoderTest {
 		origin.add("a");
 		origin.add("a");
 		phraseTranslator.putTranslation("a", "b", 1);
-		createdTested();
-		List<String> translated = tested.translate();
-		assertEquals(Lists.newArrayList("b", "b", "b"), translated);
+		assertEquals(Lists.newArrayList("b", "b", "b"), tested.translate());
 	}
 	@Test
 	public void testHighestScoreTranslation() {
 		origin.add("a");
 		phraseTranslator.putTranslation("a", "b", 3);
 		phraseTranslator.putTranslation("a", "c", 2);
-		createdTested();
-		List<String> translated = tested.translate();
-		assertEquals(Lists.newArrayList("b"), translated);
+		assertEquals(Lists.newArrayList("b"), tested.translate());
 	}
 	@Test
 	public void testRecombine() {
@@ -46,9 +46,7 @@ public class StackDecoderTest {
 		phraseTranslator.putTranslation("tengo", "am", 100);
 		phraseTranslator.putTranslation("hambre", "hungry", 103);
 		phraseTranslator.putTranslation("hambre", "hunger", 102);
-		createdTested();
-		List<String> translated = tested.translate();
-		assertEquals(Lists.newArrayList("hungry", "am"), translated);
+		assertEquals(Lists.newArrayList("hungry", "am"), tested.translate());
 	}
 	@Test
 	public void testMultiSteps() {
@@ -57,9 +55,7 @@ public class StackDecoderTest {
 		phraseTranslator.putTranslation("a", "aa", 1);
 		phraseTranslator.putTranslation("b", "bb", 1);
 		phraseTranslator.putTranslation(Lists.newArrayList("a", "b"), Lists.newArrayList("ab"), 100);
-		createdTested();
-		List<String> translated = tested.translate();
-		assertEquals(Lists.newArrayList("ab"), translated);
+		assertEquals(Lists.newArrayList("ab"), tested.translate());
 	}
 	private void createdTested() {
 		tested = new StackDecoder(origin, phraseTranslator);
