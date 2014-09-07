@@ -41,10 +41,10 @@ public class driver {
 //		new CorpusReader(cliArgs.inputfile(), linePredicate).read();
 //		CorpusData corpusData = linePredicate.getCorpusData();
 //		model.setTestCorpusSize(corpusData.tuples().size());
-		
-		//TODO - not sure how to use the ex1 code to calc the hypothesis (how to break to ngrams)
-		double preplexity = new LmProbCalculator(model, corpusData)
-				.calculate();
+//		
+//		//TODO - not sure how to use the ex1 code to calc the hypothesis (how to break to ngrams)
+//		double preplexity = new LmProbCalculator(model, corpusData)
+//				.calculate();
 		
 		 
 

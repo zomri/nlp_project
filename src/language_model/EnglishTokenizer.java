@@ -22,7 +22,7 @@ public class EnglishTokenizer {
 		JCommander jCommander = new JCommander(cliArgs, args);
 		
 		DocumentPreprocessor dp = new DocumentPreprocessor(cliArgs.inputfile());
-		Charset charset = Charset.forName("Unicode");
+		Charset charset = Charset.forName("UTF-8");
 		
 		Path file = Paths.get(cliArgs.outputFile());
 		

@@ -1,4 +1,4 @@
-package latticeGenerator;
+package LatticeGenerator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
