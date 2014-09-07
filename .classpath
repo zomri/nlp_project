@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="libs/jcommander-1.30.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-1.2.17.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="D:/Dropbox/Dropbox/NLP/project_github/nlp_project/stanford-postagger.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

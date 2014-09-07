@@ -1,0 +1,1 @@
+Java -jar lm.jar -n 2 -i english.1.4M.for-lm -o model.txt -s wb

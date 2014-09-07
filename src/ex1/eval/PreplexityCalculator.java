@@ -28,7 +28,7 @@ public class PreplexityCalculator {
 		return formula(p);
 	}
 
-	private double formula(double p) {
+	protected double formula(double p) {
 		double a = -1 / corpusTuplesSize();
 		return a * p;
 	}
