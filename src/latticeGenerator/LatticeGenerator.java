@@ -1,4 +1,4 @@
-package LatticeGenerator;
+package latticeGenerator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,29 +17,38 @@ import phrase_table.StringDoublePair;
 public class LatticeGenerator {
 
 	private String inputSentence;
-	private String phraseTableFilename;
 	private String latticeFilename;
+	private Map<String, Multiset<StringDoublePair>> phraseTableMap;
 	
 	public static void main(String[] args) {
 		
 		String input = "+W LK $WB L+ DRK +K M+ DBRH DM$Q W+ B+ HAT W+ M$XT AT XZAL L+ HMLK EL ARM";
 		
-		LatticeGenerator lg = new LatticeGenerator(input, "d:\\phrase_table.txt", "d:\\lattice.txt");
-		lg.createLatice();
+		PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter("d:\\phrase_table.txt");
+		Map<String, Multiset<StringDoublePair>> map = ptrw.read();
+
+		LatticeGenerator lg = new LatticeGenerator(input, map, "d:\\lattice.txt");
+
+		lg.createLaticeFile();
 	}
 
-	public LatticeGenerator(String inputSentence, String phraseTableFilename, String latticeFilename)
+	public LatticeGenerator(String inputSentence, Map<String, Multiset<StringDoublePair>> map, String latticeFilename)
 	{
 		this.setInputSentence(inputSentence);
-		this.setPhraseTableFilename(phraseTableFilename);
 		this.setLatticeFilename(latticeFilename);
+		this.setPhraseTableFilename(map);
 	}
 
-	public void createLatice()
-	{
+	private void setPhraseTableFilename(
+			Map<String, Multiset<StringDoublePair>> map) {
+		this.phraseTableMap = map;
+		
+	}
 
-		PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(phraseTableFilename);
-		Map<String, Multiset<StringDoublePair>> map = ptrw.read();
+	public void createLaticeFile()
+	{
+		//PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(phraseTableFilename);
+		//Map<String, Multiset<StringDoublePair>> map = ptrw.read();
 
 		Charset charset = Charset.forName("UTF-8");	
 		Path file = Paths.get(latticeFilename);
@@ -61,7 +70,7 @@ public class LatticeGenerator {
 					}
 
 
-					Multiset<StringDoublePair> set = map.get(phrase);
+					Multiset<StringDoublePair> set = phraseTableMap.get(phrase);
 					if (set != null)
 					{
 						writer.write(new Integer(i+1).toString()+"-"+new Integer(j+1).toString()+":\n");
@@ -90,14 +99,6 @@ public class LatticeGenerator {
 
 	public void setInputSentence(String inputSentence) {
 		this.inputSentence = inputSentence;
-	}
-
-	public String getPhraseTableFilename() {
-		return phraseTableFilename;
-	}
-
-	public void setPhraseTableFilename(String phraseTableFilename) {
-		this.phraseTableFilename = phraseTableFilename;
 	}
 
 	public String getLatticeFilename() {

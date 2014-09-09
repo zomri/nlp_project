@@ -1,6 +1,14 @@
 package translator;
 
+import java.util.Map;
+
+import latticeGenerator.LatticeGenerator;
+import phrase_table.PhraseTableReaderWriter;
+import phrase_table.StringDoublePair;
+
 import com.beust.jcommander.JCommander;
+import com.google.common.collect.Multiset;
+import common.TextFileUtils;
 
 import ex1.common.ArpaFormatReadWrite;
 import ex1.common.CorpusData;
@@ -29,22 +37,43 @@ public class driver {
 		//according to forum - calculate by sum of log-probs of sub-ngrams (something like perplexity)
 		//for unseen ngrams - use unseen event.
 		// Need to add <s> </s> at begin/end of sentence?
-		
-		//-i inputfile -m model file
-		
-		EvalArgs cliArgs = new EvalArgs();
+		TranslatorArgs cliArgs = new TranslatorArgs();
 		JCommander jCommander = new JCommander(cliArgs, args);
 		
-		Model model = new ArpaFormatReadWrite().readFromFile(cliArgs);
-//		CorpusReaderPredicate linePredicate = new CorpusReaderPredicate(
-//				model.n());
-//		new CorpusReader(cliArgs.inputfile(), linePredicate).read();
-//		CorpusData corpusData = linePredicate.getCorpusData();
-//		model.setTestCorpusSize(corpusData.tuples().size());
+		//Will this work?
+		EvalArgs evalArgs = new EvalArgs();
+		JCommander jCommander2 = new JCommander(evalArgs, args);
+		
+		//Reading model from file
+		Model model = new ArpaFormatReadWrite().readFromFile(evalArgs);//need only model file
+		CorpusReaderPredicate linePredicate = new CorpusReaderPredicate(
+				model.n());
+
+		//Reading phrase table from file
+		//TextFileUtils.getContent(
+		PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(cliArgs.phraseTableFile());
+		Map<String, Multiset<StringDoublePair>> map = ptrw.read();
+
+		//Reading input sentences to be translate
+		//Foreach sentence - create lattice file
+		//Translate sentence using the StackDecoder (should be initialized with Model and work with the lattice file data)
+		
+		
+//		LatticeGenerator lg = new LatticeGenerator(input, map, "d:\\lattice.txt");
+//		lg.createLaticeFile();
+
+		
+		
+		//Basic code (not finished) to calc the LM score
+		//TODO - all of this should be in Ohad's code somewhere!
+		
+//		linePredicate.apply(/*list of words from hypothesis*/);
+		//		new CorpusReader(cliArgs.inputfile(), linePredicate).read();
+		CorpusData corpusData = linePredicate.getCorpusData();
+		model.setTestCorpusSize(corpusData.tuples().size());
 //		
 //		//TODO - not sure how to use the ex1 code to calc the hypothesis (how to break to ngrams)
-//		double preplexity = new LmProbCalculator(model, corpusData)
-//				.calculate();
+//		double prob = new LmProbCalculator(model, corpusData).calculate();
 		
 		 
 
