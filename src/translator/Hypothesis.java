@@ -12,6 +12,7 @@ public class Hypothesis implements Comparable<Hypothesis>{
 	private List<Boolean> coverage = Lists.newArrayList();
 	private List<String> words = Lists.newArrayList();
 	private double score;
+	private Double totalScore;
 	
 	public Hypothesis(List<String> words, TranslationWithScore translationWithScore, List<Boolean> coverage) {
 		this.words = words;
@@ -31,7 +32,10 @@ public class Hypothesis implements Comparable<Hypothesis>{
 	}
 	
 	public double totalScore() {
-		return score + prev.stream().mapToDouble(x->x.totalScore()).max().orElse(0);
+		if (null == totalScore) {
+			totalScore = score + prev.stream().mapToDouble(x->x.totalScore()).max().orElse(0);
+		}
+		return totalScore;
 	}
 
 	public List<Hypothesis> prev() {

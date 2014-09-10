@@ -81,9 +81,9 @@ public class StackDecoder {
 	}
 
 	private void updateScore(Hypothesis translationOption) {
-		double scoreFromLattice = translationOption.score();
-		double maxPrev = translationOption.prev().stream().mapToDouble(x->x.score()).max().getAsDouble();
-		translationOption.score(scoreFromLattice + maxPrev);
+//		double scoreFromLattice = translationOption.score();
+//		double maxPrev = translationOption.prev().stream().mapToDouble(x->x.score()).max().getAsDouble();
+//		translationOption.score(scoreFromLattice + maxPrev);//probably no need
 	}
 
 	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
@@ -141,6 +141,7 @@ public class StackDecoder {
 	}
 
 	private List<String> getTranslationFromStacks() {
+		//TODO add LM score (omri)
 		List<String> translation = Lists.newArrayList();
 		Hypothesis last = stacks.get(stacks.size()-1).last();
 		boolean finished = false;

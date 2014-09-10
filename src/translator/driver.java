@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import latticeGenerator.LaticeGeneratorFromFileReader;
 import latticeGenerator.LatticeGeneratorFileWriter;
 import phrase_table.PhraseTableReaderWriter;
 
@@ -89,7 +90,7 @@ public class driver {
 	}
 	private void translate() {
 		Stopwatch sw = Stopwatch.createStarted();
-		phraseTableMap = ptrw.read();
+//		phraseTableMap = ptrw.read();
 		System.out.println("read took " + sw);
 		Predicate<String> linePredicate = new Predicate<String>(){
 			@Override
@@ -106,13 +107,21 @@ public class driver {
 	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
 	private void doTheWork(List<String> origin) {
 		
-		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, "stamLattice.txt").createLaticeFile();
+		String latticeFilename2 = "stamLattice.txt";
+//		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, latticeFilename2).createLaticeFile();
 		LatticePhraseTranslator phraseTranslator = new LatticePhraseTranslator();
 //		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LaticeGeneratorFromFileReader(latticeFilename).readLattice();
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LaticeGeneratorFromFileReader(latticeFilename2).readLattice();
 		updateTranslator(phraseTranslator, readLattice, origin);
 		StackDecoder stackDecoder = new StackDecoder(origin, phraseTranslator);
-		List<String> translate = stackDecoder.translate();
-		System.out.println(origin + "=>" + translate);
+		List<String> translate;
+		try {
+			translate = stackDecoder.translate();
+		System.out.println(Joiner.on(" ").join(translate));
+		} catch (Exception e) {
+			System.out.println("error");
+		}
+//		System.out.println(origin + "=>" + translate);
 	}
 
 	private void updateTranslator(LatticePhraseTranslator phraseTranslator,

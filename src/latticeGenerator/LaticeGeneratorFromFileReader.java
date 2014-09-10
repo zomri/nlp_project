@@ -30,7 +30,7 @@ public class LaticeGeneratorFromFileReader {
 			@Override
 			public boolean apply(String line) {
 				if (line.endsWith(":")) {
-					String patternString = "(\\d)-(\\d):";
+					String patternString = "(\\d+)-(\\d+):";
 					Pattern pattern = Pattern.compile(patternString);
 					Matcher matcher = pattern.matcher(line);
 					matcher.find();

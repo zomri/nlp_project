@@ -68,7 +68,7 @@ public class PhraseTableReaderWriter {
 		Map<String, Multiset<Pair<String, Double>>> map = Maps.newHashMap();
 
 		Path file = Paths.get(filename);
-
+		int i = 0;
 		try (BufferedReader reader = Files.newBufferedReader(file)) {
 
 			String line = "";
@@ -91,7 +91,10 @@ public class PhraseTableReaderWriter {
 				{
 					hashset.add(new Pair<String, Double>(targetPhrase,p));
 				}
-
+				i++;
+				if (i%10000 == 0){
+					System.out.println(i);
+				}
 
 			}
 		} catch (IOException x) {
