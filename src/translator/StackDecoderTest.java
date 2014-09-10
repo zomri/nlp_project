@@ -1,6 +1,6 @@
 package translator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -31,6 +31,17 @@ public class StackDecoderTest {
 		origin.add("a");
 		phraseTranslator.putTranslation("a", "b", 1);
 		assertEquals(Lists.newArrayList("b", "b", "b"), tested.translate());
+	}
+	@Test
+	public void testWordWithoutTranslation() {
+		origin.add("a");
+		assertEquals(Lists.newArrayList(StackDecoder.NA), tested.translate());
+	}
+	@Test
+	public void test2WordsWithoutTranslation() {
+		origin.add("a");
+		origin.add("a");
+		assertEquals(Lists.newArrayList(StackDecoder.NA, StackDecoder.NA), tested.translate());
 	}
 	@Test
 	public void testHighestScoreTranslation() {

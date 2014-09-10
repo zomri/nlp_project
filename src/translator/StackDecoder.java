@@ -10,8 +10,10 @@ import com.beust.jcommander.internal.Lists;
 
 public class StackDecoder {
 
+	public static final String NA = "*NA*";
 	private static final int MAX_STACK_SIZE = 10;
 	private static final int MAX_TRANSLATE_SEQUENCE = 5;
+	private static final double NA_SCORE = -1000;
 	private List<String> origin;
 	private List<SortedSet<Hypothesis>> stacks = Lists.newArrayList();
 	private LatticePhraseTranslator phraseTranslator;
@@ -33,7 +35,6 @@ public class StackDecoder {
 				for (Hypothesis translationOption : trasnlations) {
 					translationOption.prev().add(hypothesis);
 					hypothesis.next().add(translationOption);
-					updateScore(translationOption);
 					int newStackIndex = stackIndex + translationOption.words().size();
 					stacks.get(newStackIndex).add(translationOption);
 					recombine(newStackIndex);
@@ -75,15 +76,9 @@ public class StackDecoder {
 
 	private void pruneStack(int newStackIndex) {
 		SortedSet<Hypothesis> stack = stacks.get(newStackIndex);
-		if (stack.size() > MAX_STACK_SIZE) {
+		while (stack.size() > MAX_STACK_SIZE) {
 			stack.remove(stack.first());
 		}
-	}
-
-	private void updateScore(Hypothesis translationOption) {
-//		double scoreFromLattice = translationOption.score();
-//		double maxPrev = translationOption.prev().stream().mapToDouble(x->x.score()).max().getAsDouble();
-//		translationOption.score(scoreFromLattice + maxPrev);//probably no need
 	}
 
 	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
@@ -96,6 +91,9 @@ public class StackDecoder {
 		for (List<String> words : wordsList) {
 			List<Boolean> newCoverage = calcNewCoverage(hypothesis.coverage(), words);
 			Collection<TranslationWithScore> translations = phraseTranslator.getTranslation(words);
+			if (translations.isEmpty() && words.size() == 1) {
+				translations.add(new TranslationWithScore(NA, NA_SCORE));
+			}
 			for (TranslationWithScore translationWithScore : translations) {
 				$.add(new Hypothesis(words, translationWithScore, newCoverage));
 			}

@@ -103,7 +103,7 @@ public class DriverOfTranslate {
 	private void translate() {
 		Stopwatch sw = Stopwatch.createStarted();
 		phraseTableMap = SerializationUtils.fromFile("binary_map");
-		System.out.println("prepare took " + sw);
+//		System.out.println("prepare took " + sw);
 		Predicate<String> linePredicate = new Predicate<String>(){
 			@Override
 			public boolean apply(String line) {
@@ -122,8 +122,9 @@ public class DriverOfTranslate {
 		List<String> translate;
 		try {
 			translate = stackDecoder.translate();
-		System.out.println(Joiner.on(" ").join(translate));
+			System.out.println(Joiner.on(" ").join(translate));
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("error");
 		}
 //		System.out.println(origin + "=>" + translate);
