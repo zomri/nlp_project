@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultiset;
@@ -25,8 +24,8 @@ public class LaticeGeneratorFromFileReader {
 		this.latticeFilename = latticeFilename;
 	}
 
-	public Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> readLattice() {
-		Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> $ = Maps.newHashMap();
+	public Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice() {
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> $ = Maps.newHashMap();
 		Predicate<String> linePredicate = new Predicate<String>() {
 			@Override
 			public boolean apply(String line) {
@@ -42,7 +41,7 @@ public class LaticeGeneratorFromFileReader {
 					List<String> lineSplitted = Splitter.on("\t").splitToList(line);
 					double prob = Double.parseDouble(lineSplitted.get(lineSplitted.size() - 1));
 					List<String> theSentence = lineSplitted.subList(0, lineSplitted.size() - 1);
-					$.get(span).add(new Pair<String, Double>(Joiner.on(" ").join(theSentence), prob));
+					$.get(span).add(new Pair<>(theSentence, prob));
 				}
 				return true;
 			}

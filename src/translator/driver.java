@@ -1,12 +1,20 @@
 package translator;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import latticeGenerator.LatticeGeneratorFileWriter;
 import phrase_table.PhraseTableReaderWriter;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Multiset;
+import common.TextFileUtils;
 
 import edu.stanford.nlp.util.Pair;
 import ex1.common.ArpaFormatReadWrite;
@@ -17,7 +25,7 @@ import ex1.eval.EvalArgs;
 
 public class driver {
 
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 		/* TODO:
 		 * - read language model file (create one first, tokenization before!)
 		 * - read sentences in hebrew 
@@ -57,7 +65,7 @@ public class driver {
 		
 		String line = "";
 		LatticeGeneratorFileWriter lg = new LatticeGeneratorFileWriter(line, phraseTableMap, "d:\\lattice.txt"); //TODO - parameter
-		Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> latticeMap = lg.createLaticeFile();
+//		Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> latticeMap = lg.createLaticeFile();
 
 		//TODO - question - what the hell should be the testCorpusSize??
 		
@@ -72,8 +80,49 @@ public class driver {
 //		//TODO - not sure how to use the ex1 code to calc the hypothesis (how to break to ngrams)
 //		double prob = new LmProbCalculator(model, corpusData).calculate();
 		
-		 
+		
 
 	}
 
+	public static void main(String[] args) {
+		new driver().translate();
+	}
+	private void translate() {
+		Stopwatch sw = Stopwatch.createStarted();
+		phraseTableMap = ptrw.read();
+		System.out.println("read took " + sw);
+		Predicate<String> linePredicate = new Predicate<String>(){
+			@Override
+			public boolean apply(String line) {
+				List<String> origin = Splitter.on(" ").splitToList(line);
+				doTheWork(origin);
+				return true;
+			}};
+		String file = "test set\\test.heb";
+		TextFileUtils.getContentByLines(file, linePredicate);
+	}
+	String latticeFilename = "phrase_table.txt";
+	PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(latticeFilename);
+	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
+	private void doTheWork(List<String> origin) {
+		
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, "stamLattice.txt").createLaticeFile();
+		LatticePhraseTranslator phraseTranslator = new LatticePhraseTranslator();
+//		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LaticeGeneratorFromFileReader(latticeFilename).readLattice();
+		updateTranslator(phraseTranslator, readLattice, origin);
+		StackDecoder stackDecoder = new StackDecoder(origin, phraseTranslator);
+		List<String> translate = stackDecoder.translate();
+		System.out.println(origin + "=>" + translate);
+	}
+
+	private void updateTranslator(LatticePhraseTranslator phraseTranslator,
+			Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice, List<String> origin) {
+		for (Entry<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> entry : readLattice.entrySet()) {
+			Pair<Integer, Integer> key = entry.getKey();
+			List<String> originPhrase = Lists.newArrayList(origin.subList(key.first() - 1, key.second()));
+			for (Pair<List<String>, Double> pair : entry.getValue()) {
+				phraseTranslator.putTranslation(originPhrase, pair.first(), pair.second());
+			}
+		}
+	}
 }

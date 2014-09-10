@@ -1,6 +1,5 @@
 package latticeGenerator;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -9,16 +8,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.beust.jcommander.internal.Sets;
+import phrase_table.PhraseTableReaderWriter;
+
+import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
 
 import edu.stanford.nlp.util.Pair;
-import phrase_table.PhraseTableReaderWriter;
 
 public class LatticeGeneratorFileWriter {
 
@@ -53,10 +51,10 @@ public class LatticeGeneratorFileWriter {
 
 	
 	
-	public Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> createLaticeFile()
+	public Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> createLaticeFile()
 	{
 
-		Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> map = Maps.newHashMap();
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> map = Maps.newHashMap();
 		
 		Charset charset = Charset.forName("UTF-8");	
 		Path file = Paths.get(latticeFilename);
@@ -84,13 +82,13 @@ public class LatticeGeneratorFileWriter {
 						writer.write(new Integer(i+1).toString()+"-"+new Integer(j+1).toString()+":\n");
 
 						Pair<Integer, Integer> rangePair = new Pair<Integer, Integer>(i+1, j+1);
-						Multiset<Pair<String, Double>> innerSet = HashMultiset.create();
+						Multiset<Pair<List<String>, Double>> innerSet = HashMultiset.create();
 			    		map.put(rangePair, innerSet);
 						
 						for (Pair<String, Double> pair : set)
 						{
 							writer.write(pair.first+"\t"+pair.second+"\n");
-							innerSet.add(new Pair<String,Double>(pair.first,pair.second));
+							innerSet.add(new Pair<List<String>,Double>(Splitter.on(" ").splitToList(pair.first),pair.second));
 						}
 					}
 					else

@@ -71,6 +71,10 @@ public class Hypothesis implements Comparable<Hypothesis>{
 	public List<String> words() {
 		return words;
 	}
+
+	public void score(double updatedScore) {
+		score = updatedScore;
+	}
 	
 	
 }

@@ -81,9 +81,9 @@ public class StackDecoder {
 	}
 
 	private void updateScore(Hypothesis translationOption) {
-		// TODO Auto-generated method stub
-		//at this point score only contains lattice score
-		double latticeScore = translationOption.score();
+		double scoreFromLattice = translationOption.score();
+		double maxPrev = translationOption.prev().stream().mapToDouble(x->x.score()).max().getAsDouble();
+		translationOption.score(scoreFromLattice + maxPrev);
 	}
 
 	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
