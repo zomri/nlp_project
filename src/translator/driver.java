@@ -2,7 +2,7 @@ package translator;
 
 import java.util.Map;
 
-import latticeGenerator.LatticeGenerator;
+import latticeGenerator.LatticeGeneratorFileWriter;
 import phrase_table.PhraseTableReaderWriter;
 
 import com.beust.jcommander.JCommander;
@@ -56,7 +56,7 @@ public class driver {
 		//Translate sentence using the StackDecoder (should be initialized with Model and work with the lattice file data)
 		
 		String line = "";
-		LatticeGenerator lg = new LatticeGenerator(line, phraseTableMap, "d:\\lattice.txt"); //TODO - parameter
+		LatticeGeneratorFileWriter lg = new LatticeGeneratorFileWriter(line, phraseTableMap, "d:\\lattice.txt"); //TODO - parameter
 		Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> latticeMap = lg.createLaticeFile();
 
 		//TODO - question - what the hell should be the testCorpusSize??
