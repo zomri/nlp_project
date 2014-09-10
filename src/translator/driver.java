@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import latticeGenerator.LaticeGeneratorFromFileReader;
 import latticeGenerator.LatticeGeneratorFileWriter;
 import phrase_table.PhraseTableReaderWriter;
 
@@ -15,6 +14,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Multiset;
+import common.SerializationUtils;
 import common.TextFileUtils;
 
 import edu.stanford.nlp.util.Pair;
@@ -24,7 +24,7 @@ import ex1.common.Model;
 import ex1.eval.CorpusReaderPredicate;
 import ex1.eval.EvalArgs;
 
-public class driver {
+public class Driver {
 
 	public static void main1(String[] args) {
 		/* TODO:
@@ -85,13 +85,25 @@ public class driver {
 
 	}
 
+	String latticeFilename = "phrase_table.txt";
+	PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(latticeFilename);
+	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
+	
 	public static void main(String[] args) {
-		new driver().translate();
+//		new Driver().prepareMap();
+		new Driver().translate();
+	}
+	
+	private void prepareMap() {
+		Stopwatch sw = Stopwatch.createStarted();
+		phraseTableMap = ptrw.read();
+		SerializationUtils.toFile("binary_map", phraseTableMap);
+		System.out.println("prepare took " + sw);
 	}
 	private void translate() {
 		Stopwatch sw = Stopwatch.createStarted();
-//		phraseTableMap = ptrw.read();
-		System.out.println("read took " + sw);
+		phraseTableMap = SerializationUtils.fromFile("binary_map");
+		System.out.println("prepare took " + sw);
 		Predicate<String> linePredicate = new Predicate<String>(){
 			@Override
 			public boolean apply(String line) {
@@ -102,16 +114,9 @@ public class driver {
 		String file = "test set\\test.heb";
 		TextFileUtils.getContentByLines(file, linePredicate);
 	}
-	String latticeFilename = "phrase_table.txt";
-	PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(latticeFilename);
-	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
 	private void doTheWork(List<String> origin) {
-		
-		String latticeFilename2 = "stamLattice.txt";
-//		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, latticeFilename2).createLaticeFile();
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, null).createLaticeFile();
 		LatticePhraseTranslator phraseTranslator = new LatticePhraseTranslator();
-//		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LaticeGeneratorFromFileReader(latticeFilename).readLattice();
-		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LaticeGeneratorFromFileReader(latticeFilename2).readLattice();
 		updateTranslator(phraseTranslator, readLattice, origin);
 		StackDecoder stackDecoder = new StackDecoder(origin, phraseTranslator);
 		List<String> translate;

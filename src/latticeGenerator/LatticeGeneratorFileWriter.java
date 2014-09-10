@@ -1,7 +1,7 @@
 package latticeGenerator;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +15,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multiset;
+import com.google.common.io.CharStreams;
 
 import edu.stanford.nlp.util.Pair;
 
@@ -57,11 +58,12 @@ public class LatticeGeneratorFileWriter {
 		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> map = Maps.newHashMap();
 		
 		Charset charset = Charset.forName("UTF-8");	
-		Path file = Paths.get(latticeFilename);
-		BufferedWriter writer = null;
+		Writer writer = CharStreams.nullWriter();
 		try {
-			writer = Files.newBufferedWriter(file,charset);
-
+			if (latticeFilename != null) {
+				Path file = Paths.get(latticeFilename);
+				writer = Files.newBufferedWriter(file,charset);
+			}
 			//Foreach span of the sentence - find the relevant translations - and their scores (not in particular order)
 			String[] words = inputSentence.split("\\s");
 
@@ -93,7 +95,7 @@ public class LatticeGeneratorFileWriter {
 					}
 					else
 					{
-						System.out.println("Failed to find translation for '"+phrase+"'");
+//						System.out.println("Failed to find translation for '"+phrase+"'");
 					}
 				}
 			}
