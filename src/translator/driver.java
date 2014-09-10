@@ -4,19 +4,16 @@ import java.util.Map;
 
 import latticeGenerator.LatticeGenerator;
 import phrase_table.PhraseTableReaderWriter;
-import phrase_table.StringDoublePair;
 
 import com.beust.jcommander.JCommander;
 import com.google.common.collect.Multiset;
-import common.TextFileUtils;
 
+import edu.stanford.nlp.util.Pair;
 import ex1.common.ArpaFormatReadWrite;
 import ex1.common.CorpusData;
-import ex1.common.CorpusReader;
 import ex1.common.Model;
 import ex1.eval.CorpusReaderPredicate;
 import ex1.eval.EvalArgs;
-import ex1.eval.PreplexityCalculator;
 
 public class driver {
 
@@ -52,17 +49,17 @@ public class driver {
 		//Reading phrase table from file
 		//TextFileUtils.getContent(
 		PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(cliArgs.phraseTableFile());
-		Map<String, Multiset<StringDoublePair>> map = ptrw.read();
+		Map<String, Multiset<Pair<String,Double>>> phraseTableMap = ptrw.read();
 
 		//Reading input sentences to be translate
 		//Foreach sentence - create lattice file
 		//Translate sentence using the StackDecoder (should be initialized with Model and work with the lattice file data)
 		
-		
-//		LatticeGenerator lg = new LatticeGenerator(input, map, "d:\\lattice.txt");
-//		lg.createLaticeFile();
+		String line = "";
+		LatticeGenerator lg = new LatticeGenerator(line, phraseTableMap, "d:\\lattice.txt"); //TODO - parameter
+		Map<Pair<Integer, Integer>, Multiset<Pair<String, Double>>> latticeMap = lg.createLaticeFile();
 
-		
+		//TODO - question - what the hell should be the testCorpusSize??
 		
 		//Basic code (not finished) to calc the LM score
 		//TODO - all of this should be in Ohad's code somewhere!

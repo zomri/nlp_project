@@ -15,6 +15,8 @@ import com.beust.jcommander.internal.Maps;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
+import edu.stanford.nlp.util.Pair;
+
 public class PhraseTableReaderWriter {
 
 	String filename;
@@ -38,17 +40,17 @@ public class PhraseTableReaderWriter {
 		this.filename = filename;
 	}
 
-	public void write(Map<String, Multiset<StringDoublePair>> map) {
+	public void write(Map<String, Multiset<Pair<String, Double>>> map) {
 		Charset charset = Charset.forName("UTF-8");	
 		Path file = Paths.get(filename);
 
 		try (BufferedWriter writer = Files.newBufferedWriter(file, charset)) {
 
-			for (Entry<String, Multiset<StringDoublePair>> entry : map.entrySet())
+			for (Entry<String, Multiset<Pair<String, Double>>> entry : map.entrySet())
 			{
-				for (StringDoublePair pair : entry.getValue()) 
+				for (Pair<String, Double> pair : entry.getValue()) 
 				{
-					String line = entry.getKey() + delim + pair.getS() + delim + pair.getD().toString();
+					String line = entry.getKey() + delim + pair.first + delim + pair.second.toString();
 					writer.write(line,0,line.length());
 				}
 
@@ -61,9 +63,9 @@ public class PhraseTableReaderWriter {
 		}
 	}
 
-	public Map<String, Multiset<StringDoublePair>> read() {
+	public Map<String, Multiset<Pair<String, Double>>> read() {
 
-		Map<String, Multiset<StringDoublePair>> map = Maps.newHashMap();
+		Map<String, Multiset<Pair<String, Double>>> map = Maps.newHashMap();
 
 		Path file = Paths.get(filename);
 
@@ -78,16 +80,16 @@ public class PhraseTableReaderWriter {
 				Double p = s.nextDouble();
 				s.close(); 
 
-				Multiset<StringDoublePair> hashset =  map.get(srcPhrase);
+				Multiset<Pair<String, Double>> hashset =  map.get(srcPhrase);
 				if (hashset == null)
 				{
 					hashset = HashMultiset.create();
-					hashset.add(new StringDoublePair(p,targetPhrase));
+					hashset.add(new Pair<String, Double>(targetPhrase,p));
 					map.put(srcPhrase, hashset);
 				}
 				else
 				{
-					hashset.add(new StringDoublePair(p,targetPhrase));
+					hashset.add(new Pair<String, Double>(targetPhrase,p));
 				}
 
 
