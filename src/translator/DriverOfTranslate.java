@@ -24,7 +24,7 @@ import ex1.common.Model;
 import ex1.eval.CorpusReaderPredicate;
 import ex1.eval.EvalArgs;
 
-public class Driver {
+public class DriverOfTranslate {
 
 	public static void main1(String[] args) {
 		/* TODO:
@@ -91,7 +91,7 @@ public class Driver {
 	
 	public static void main(String[] args) {
 //		new Driver().prepareMap();
-		new Driver().translate();
+		new DriverOfTranslate().translate();
 	}
 	
 	private void prepareMap() {
