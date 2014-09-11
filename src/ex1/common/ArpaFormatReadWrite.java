@@ -1,9 +1,6 @@
 package ex1.common;
 
-import java.io.BufferedReader;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,8 +10,8 @@ import java.util.regex.Pattern;
 import com.beust.jcommander.internal.Lists;
 import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Splitter;
-
 import common.TextFileUtils;
+
 import ex1.eval.EvalArgs;
 import ex1.lm.LmArgs;
 import ex1.lm.ls.LsModel;
@@ -100,8 +97,10 @@ public class ArpaFormatReadWrite {
 //		} catch (IOException x) {
 //		    System.err.format("IOException: %s%n", x);
 //		}
-		
+		System.out.println("done reading " + new Date());
+		System.out.println("now parsing lines " + content.size());
 		for (int i = 0; i < content.size(); i++) {
+				System.out.println(i);
 			String line = content.get(i);
 			if (line.startsWith(NGRAM)) {
 				String[] split = line.split("=");
@@ -126,12 +125,13 @@ public class ArpaFormatReadWrite {
 				int key = Integer.valueOf(matcher.group(1));
 				int count = ngramsCount.get(key);
 				ngrams.put(key,
-						parseNgrmas(content.subList(i + 1, i + 1 + count), key));
+						parseNgrmas(Lists.newArrayList(content.subList(i + 1, i + 1 + count)), key));
 				i += count;
 				n = Math.max(n, key);
 				continue;
 			}
 		}
+		System.out.println("done parsing " + new Date());
 		switch (smooth) {
 		case ls:
 			return new LsModel(n, lambda, ngrams);
@@ -145,7 +145,10 @@ public class ArpaFormatReadWrite {
 	private Map<WordTuple, WordTupleData> parseNgrmas(List<String> content,
 			int ngram) {
 		Map<WordTuple, WordTupleData> $ = Maps.newHashMap();
+		int i = 0;
+		System.out.println("going to work " + content.size());
 		for (String line : content) {
+			System.out.println(i++);
 			List<String> split = Splitter.on(SEPERATOR).splitToList(line);
 			WordTupleData wordTupleData = new WordTupleData(
 					Double.valueOf(split.get(0)), Integer.valueOf(split

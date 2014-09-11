@@ -1,5 +1,6 @@
 package ex1.lm.ls;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +16,9 @@ import ex1.common.Model;
 import ex1.common.WordTuple;
 import ex1.common.WordTupleData;
 
-public class LsModel implements Model {
+public class LsModel implements Model, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(LsModel.class);
 
 	private int n;

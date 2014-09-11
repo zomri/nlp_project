@@ -85,14 +85,15 @@ public class DriverOfTranslate {
 
 	}
 
-	String latticeFilename = "c:/phrase_table.txt";
-	PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(latticeFilename);
+	private String latticeFilename = "phrase_table.txt";
+	private PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(latticeFilename);
 	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
-	Model lm;
+	private Model lm;
 	
 	public static void main(String[] args) {
 //		new DriverOfTranslate().prepareMap();
-		new DriverOfTranslate().translate();
+		new DriverOfTranslate().prepareModel();
+//		new DriverOfTranslate().translate();
 	}
 	
 	private void prepareMap() {
@@ -101,11 +102,17 @@ public class DriverOfTranslate {
 		SerializationUtils.toFile("binary_map", phraseTableMap);
 		System.out.println("prepare took " + sw);
 	}
+	private void prepareModel() {
+		Stopwatch sw = Stopwatch.createStarted();
+		lm = new ArpaFormatReadWrite().readFromFile("model.txt");
+		SerializationUtils.toFile("binary_model", lm);
+		System.out.println("prepare took " + sw);
+	}
 	private void translate() {
 		Stopwatch sw = Stopwatch.createStarted();
-		lm = new ArpaFormatReadWrite().readFromFile("d:/model.txt");
 		phraseTableMap = SerializationUtils.fromFile("binary_map");
-//		System.out.println("prepare took " + sw);
+		lm = SerializationUtils.fromFile("binary_model");
+		System.out.println("prepare took " + sw);
 		Predicate<String> linePredicate = new Predicate<String>(){
 			@Override
 			public boolean apply(String line) {

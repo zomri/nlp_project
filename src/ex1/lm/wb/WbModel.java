@@ -1,5 +1,6 @@
 package ex1.lm.wb;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,8 +13,9 @@ import ex1.common.Model;
 import ex1.common.WordTuple;
 import ex1.common.WordTupleData;
 
-public class WbModel implements Model {
+public class WbModel implements Model, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(WbModel.class);
 
 	private int n;

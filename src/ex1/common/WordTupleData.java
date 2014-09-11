@@ -1,12 +1,14 @@
 package ex1.common;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
 import org.apache.log4j.Logger;
 
-public class WordTupleData {
+public class WordTupleData implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private static final Logger log = Logger.getLogger(WordTupleData.class);
 	private double p;
 	private int count;
