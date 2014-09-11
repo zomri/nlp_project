@@ -131,7 +131,7 @@ public class ArpaFormatReadWrite {
 				continue;
 			}
 		}
-		System.out.println("done parsing " + new Date());
+		System.out.println(smooth + " done parsing " + new Date());
 		switch (smooth) {
 		case ls:
 			return new LsModel(n, lambda, ngrams);

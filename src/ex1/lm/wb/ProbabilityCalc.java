@@ -1,5 +1,6 @@
 package ex1.lm.wb;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,8 +14,9 @@ import ex1.common.Model;
 import ex1.common.WordTuple;
 import ex1.common.WordTupleData;
 
-public class ProbabilityCalc {
+public class ProbabilityCalc implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static final Logger log = Logger.getLogger(ProbabilityCalc.class);
 	private int n;
 	private Map<Integer, Multimap<WordTuple, String>> ngrams;

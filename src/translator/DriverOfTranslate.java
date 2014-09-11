@@ -92,8 +92,8 @@ public class DriverOfTranslate {
 	
 	public static void main(String[] args) {
 //		new DriverOfTranslate().prepareMap();
-		new DriverOfTranslate().prepareModel();
-//		new DriverOfTranslate().translate();
+//		new DriverOfTranslate().prepareModel();
+		new DriverOfTranslate().translate();
 	}
 	
 	private void prepareMap() {
