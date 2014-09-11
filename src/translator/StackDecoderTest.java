@@ -69,7 +69,7 @@ public class StackDecoderTest {
 		assertEquals(Lists.newArrayList("ab"), tested.translate());
 	}
 	private void createdTested() {
-		tested = new StackDecoder(origin, phraseTranslator);
+		tested = new StackDecoder(origin, phraseTranslator,null);
 	}
 
 	//test with scoring algorithm from model

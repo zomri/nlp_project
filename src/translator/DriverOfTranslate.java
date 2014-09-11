@@ -85,12 +85,13 @@ public class DriverOfTranslate {
 
 	}
 
-	String latticeFilename = "phrase_table.txt";
+	String latticeFilename = "c:/phrase_table.txt";
 	PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(latticeFilename);
 	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
+	Model lm;
 	
 	public static void main(String[] args) {
-//		new Driver().prepareMap();
+//		new DriverOfTranslate().prepareMap();
 		new DriverOfTranslate().translate();
 	}
 	
@@ -102,6 +103,7 @@ public class DriverOfTranslate {
 	}
 	private void translate() {
 		Stopwatch sw = Stopwatch.createStarted();
+		lm = new ArpaFormatReadWrite().readFromFile("d:/model.txt");
 		phraseTableMap = SerializationUtils.fromFile("binary_map");
 //		System.out.println("prepare took " + sw);
 		Predicate<String> linePredicate = new Predicate<String>(){
@@ -118,7 +120,7 @@ public class DriverOfTranslate {
 		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, null).createLaticeFile();
 		LatticePhraseTranslator phraseTranslator = new LatticePhraseTranslator();
 		updateTranslator(phraseTranslator, readLattice, origin);
-		StackDecoder stackDecoder = new StackDecoder(origin, phraseTranslator);
+		StackDecoder stackDecoder = new StackDecoder(origin, phraseTranslator,lm);
 		List<String> translate;
 		try {
 			translate = stackDecoder.translate();

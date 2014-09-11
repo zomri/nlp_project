@@ -7,21 +7,32 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.beust.jcommander.internal.Lists;
+import com.google.common.base.Joiner;
+
+import ex1.common.CorpusData;
+import ex1.common.CorpusReader;
+import ex1.common.Model;
+import ex1.eval.CorpusReaderPredicate;
 
 public class StackDecoder {
 
 	public static final String NA = "*NA*";
 	private static final int MAX_STACK_SIZE = 10;
 	private static final int MAX_TRANSLATE_SEQUENCE = 5;
-	private static final double NA_SCORE = -1000;
+	private static final double NA_SCORE = 0;//-1000;
 	private List<String> origin;
 	private List<SortedSet<Hypothesis>> stacks = Lists.newArrayList();
 	private LatticePhraseTranslator phraseTranslator;
+	private Model model;
+	private double lambdaTrans = 0.1;
+	private double lambdaLm = 0.9;
 	
-	public StackDecoder(List<String> origin, LatticePhraseTranslator phraseTranslator) {
+	//TODO - add parameters for lambdas
+	public StackDecoder(List<String> origin, LatticePhraseTranslator phraseTranslator, Model model) {
 		super();
 		this.origin = origin;
 		this.phraseTranslator = phraseTranslator;
+		this.model = model;
 	}
 
 	public List<String> translate(){
@@ -140,19 +151,57 @@ public class StackDecoder {
 
 	private List<String> getTranslationFromStacks() {
 		//TODO add LM score (omri)
+		//TODO - try out the following - foreach entry in last stack, backtrack to create translation
+		//Then - calc score by taking current score and LM-score on translation (with lambdas)
+		//Pick highest score translation
+		List<String> bestTranslation = null;
+		List<String> translation = null;//Lists.newArrayList();
+		Double maxScore = Double.NEGATIVE_INFINITY;
+		
+		for (Hypothesis h : stacks.get(stacks.size()-1))
+		{
+			translation = getTranslationFromStacks(h);
+			
+			CorpusReaderPredicate linePredicate = new CorpusReaderPredicate(
+					model.n());
+			//TODO - a bit idiotic - as we split again inside LineReader..
+			new LineReader(Joiner.on(" ").join(translation), linePredicate).read();
+			CorpusData corpusData = linePredicate.getCorpusData();
+			model.setTestCorpusSize(corpusData.tuples().size());
+			
+			//TODO - make sure how to use the ex1 code to calc the hypothesis (how to break to ngrams)
+		
+			Double score = lambdaTrans * h.totalScore() + lambdaLm * (new LmProbCalculator(model, corpusData)).calculate();
+			if (score > maxScore)
+			{
+				maxScore = score;
+				bestTranslation = translation;
+			}
+		}
+		//Hypothesis last = stacks.get(stacks.size()-1).last();
+		
+		return bestTranslation;
+	}
+	
+	private List<String> getTranslationFromStacks(Hypothesis hypo) {
+		//TODO add LM score (omri)
+		//TODO - try out the following - foreach entry in last stack, backtrack to create translation
+		//Then - calc score by taking current score and LM-score on translation (with lambdas)
+		//Pick highest score translation
 		List<String> translation = Lists.newArrayList();
-		Hypothesis last = stacks.get(stacks.size()-1).last();
+		
 		boolean finished = false;
 		while (!finished){
-			translation.addAll(0, last.translation());
-			List<Hypothesis> prev = last.prev();
+			translation.addAll(0, hypo.translation());
+			List<Hypothesis> prev = hypo.prev();
 			if (prev.isEmpty()) {
 				finished = true;
 			}
 			else {
-				last = prev.get(0);
+				hypo = prev.get(0);
 			}
 		}
 		return translation;
 	}
+	
 }

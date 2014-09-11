@@ -1,5 +1,9 @@
 package ex1.common;
 
+import java.io.BufferedReader;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,8 +13,8 @@ import java.util.regex.Pattern;
 import com.beust.jcommander.internal.Lists;
 import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Splitter;
-import common.TextFileUtils;
 
+import common.TextFileUtils;
 import ex1.eval.EvalArgs;
 import ex1.lm.LmArgs;
 import ex1.lm.ls.LsModel;
@@ -72,13 +76,31 @@ public class ArpaFormatReadWrite {
 			content.append("\n");
 		}
 	}
-
+	
 	public Model readFromFile(EvalArgs cliArgs) {
-		List<String> content = TextFileUtils.getContent(cliArgs.modelfile());
+		return readFromFile(cliArgs.modelfile());
+	}
+
+	public Model readFromFile(String modelfile) {
+
+		List<String> content = TextFileUtils.getContent(modelfile);
 		Map<Integer, Integer> ngramsCount = Maps.newHashMap();
 		Map<Integer, Map<WordTuple, WordTupleData>> ngrams = Maps.newHashMap();
 		int n = 0;
 		double lambda = 0;
+
+		//TODO - read buffered - no need for all data to be loaded - memory!
+//		Path file = Paths.get(modelfile);
+//		Charset charset = Charset.forName("UTF8");
+//		try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
+//		    String line = null;
+//		    while ((line = reader.readLine()) != null) {
+//		        System.out.println(line);
+//		    }
+//		} catch (IOException x) {
+//		    System.err.format("IOException: %s%n", x);
+//		}
+		
 		for (int i = 0; i < content.size(); i++) {
 			String line = content.get(i);
 			if (line.startsWith(NGRAM)) {
