@@ -33,17 +33,7 @@ public class PhraseTableCalculator {
 		for (int i=0; i<sentencesA.size(); ++i) {
 			System.out.println(i);
 			AlignmentMatrix am = new AlignedSentenceReader().createMatrix(sentencesA.get(i), sentencesB.get(i));
-			//TODO - make sure rows are source (HEB) and columns are target (ENG)
-
-			//TODO - run the article algorithm - find consistent phrases - put them in a table
-			// and calculate their frequency (I guess counting the singe/pairs of them)
-			// NOTICE - need to translate only from HEB to ENG! make sure to work with correct matrix dimention
-			//consistent - any matching word shouldbe included in the phrase (either source or target)
-			//iterate the source words - check if pair is consistent - if so - add it to counting set
-
-			//unaligned word - target word that has no source word (empty matrix column)
-			// - any easy way to mark such word? can we look only in adjacent cells?
-			//Q: what do we do with "source" words that don't have alignment at all?
+			//make sure rows are source (HEB) and columns are target (ENG)
 
 			/*
 			 * My idea for algorithm (not article): for each possible consecutive src phrase:
@@ -72,12 +62,8 @@ public class PhraseTableCalculator {
 
 					//check if (row1->row2 is consistent with translation)
 					//return also the max aligned matrix - so we can calculate the phrases..
-					//TODO - perhaps return also list of non-aligned words at prefix/postfix of phrase..
 					List<Integer> minMaxIdx = getMaxConsistentIdx(srcWords,targetWords,src2targetAl,target2srcAl,row1,row2);
 					if (minMaxIdx != null) { //otherwise - not consistent!
-						//SHIT - what do we do with non-aligned words? (like "," in example)?
-
-						//TODO - iterate from min downwards, max upwards - collect possible words with 
 						// misaligend prefixes/postfixes
 						List<List<String>> nonAlignedPrefixPostix = getNonalignments(targetWords,target2srcAl,minMaxIdx.get(0),minMaxIdx.get(1));
 						String alignedPhrase = getPhrase(targetWords,minMaxIdx.get(0),minMaxIdx.get(1));						
@@ -95,23 +81,9 @@ public class PhraseTableCalculator {
 							}
 							else
 							{
-								engPhrases.add(possiblePhrase); //TODO - verify this updates the inner hashmap..
+								engPhrases.add(possiblePhrase); 
 							}
-
-							//							Multiset<String> hebPhrases =  engGivenHebPhraseMap.get(possiblePhrase);
-							//							if (hebPhrases == null)
-							//							{
-							//								hebPhrases = HashMultiset.create();
-							//								hebPhrases.add(srcPhrase);
-							//								engGivenHebPhraseMap.put(possiblePhrase, hebPhrases);
-							//							}
-							//							else
-							//							{
-							//								hebPhrases.add(srcPhrase); //TODO - verify this updates the inner hashmap..
-							//							}
 						}
-						//engGivenHebPhraseSet.add(alignedPhrase + "_|_"+srcPhrase);
-
 					}
 				}
 			}
@@ -216,8 +188,7 @@ public class PhraseTableCalculator {
 			}
 		}
 
-		//TODO - what to do when ther's no alignment at all?
-		//TODO - meanwhile - if there's no alignemnt at all - return null
+		//meanwhile - if there's no alignemnt at all - return null
 		if (max == -1) {
 			return null;
 		}
