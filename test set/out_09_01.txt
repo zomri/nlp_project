@@ -1,0 +1,2 @@
+parameters are TranslatorArgs [fileToTranslate=test set\test.heb, outputFile=test set\out_09_01.txt, lambdaTranslation=0.9, lambdaLanguageModel=0.1, histogramPruningLimit=10]
+now see? for the LORD hath chosen thee, to build an house sanctuary, strong and do
