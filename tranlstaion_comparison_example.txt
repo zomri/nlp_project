@@ -16,7 +16,7 @@ And they troubled the people and the rulers of the city, when they heard these t
 Saying, Say ye, His disciples came by night, and stole him away while we slept.
 When ye blow an alarm, then the camps that lie on the east parts shall go forward.
 
-WITH LM! NA==0
+WITH LM! NA==0 (trans-0.9, lm-0.1)
 --------
 now see? for the LORD hath chosen thee, to build an house sanctuary, strong and do
 and the heathen shall know that I the LORD do sanctify Israel when my sanctuary in the midst of them for evermore.
@@ -25,6 +25,18 @@ the LORD shall comfort For this not be saith the LORD
 One kid of the goats make an atonement for you.
 And it came to pass, when Elijah *NA* him with the a him, went forth, stood at the door cave, and Behold, unto and he said What doest thou here, Elijah?
 and *NA* people, and the rulers of the city, which have heard this
+said, that they his disciples, him, by night, and *NA* it in when we were are asleep to speak.
+and blow ye ye with shouting, and hence; *NA* on the east side
+
+WITH LM! NA==0 (trans-0.1, lm-0.9)
+--------
+now see? for the LORD hath chosen thee, to build an house sanctuary, strong and do
+and the heathen shall know that I the LORD do sanctify Israel when my sanctuary in the midst of them for evermore.
+and as they say unto thee, children of thy people, saying, Hast thou not thou shalt tell it us what these things are thee,
+the LORD shall comfort For this not be saith the LORD
+One kid of the goats to make an atonement for you.
+And it came to pass, when Elijah *NA* him with the a him, went forth, stood at the door cave, and Behold, unto and he said What doest thou here, Elijah?
+and *NA* people, and the rulers of the city, which have heard this,
 said, that they his disciples, him, by night, and *NA* it in when we were are asleep to speak.
 and blow ye ye with shouting, and hence; *NA* on the east side
 
