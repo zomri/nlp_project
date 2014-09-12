@@ -41,6 +41,7 @@ public class DriverOfTranslate {
 	private OutputStreamWriter writer;
 	
 	public static void main(String[] args) throws IOException {
+//		args = new String[]{"-o","output_file","-i","test set\\test.heb"};
 		BasicConfigurator.configure(new FileAppender(new SimpleLayout(), "log_file"));
 		new DriverOfTranslate().translate(args);
 	}
@@ -80,7 +81,7 @@ public class DriverOfTranslate {
 
 	private void init(String[] args) {
 		new JCommander(cliArgs, args);
-		writeToFile("parameters are " + cliArgs);
+//		writeToFile("parameters are " + cliArgs);
 		prepareMap();
 		prepareModel();
 	}

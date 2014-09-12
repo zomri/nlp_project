@@ -1,0 +1,41 @@
+to compile and create jars copy all ant scripts to the project's main dir
+then run build.xml
+to export jars run the ant file with the name of the jar.
+
+below are instructions for the execution  and build from sources of each step:
+[] - optional arguments
+
+cleaning:
+=========
+$ java -jar cleaner.jar [-n <max_number_of_tokens>] file1 file2 ... 
+  
+word alignment:
+===============
+$ giza_script.sh
+
+phrase alignment and phrase table:
+==================================
+$
+
+language model:
+===============
+english tokenizing (with stanford postagger):
+$ java -jar english_tokenizer.jar -i <input_file> -o <output_file>
+building the language model:
+$ 
+
+
+lattice generator:
+==================
+
+
+
+stack decoder:
+==============
+$ java -jar translator.jar -p <phrase_table_file> -i <input_file_to_translate> [-o <output_file>] -m <language_model_file> [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>]
+if output file not supplied, it will print to stdout
+default lambda values are 0.5
+default prune stack max size is 10
+
+
+
