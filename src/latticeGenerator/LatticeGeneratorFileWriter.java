@@ -11,6 +11,7 @@ import java.util.Map;
 
 import phrase_table.PhraseTableReaderWriter;
 
+import com.beust.jcommander.JCommander;
 import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Maps;
@@ -26,14 +27,11 @@ public class LatticeGeneratorFileWriter {
 	private Map<String, Multiset<Pair<String, Double>>> phraseTableMap;
 	
 	public static void main(String[] args) {
-		
-		String input = "+W LK $WB L+ DRK +K M+ DBRH DM$Q W+ B+ HAT W+ M$XT AT XZAL L+ HMLK EL ARM";
-		
-		PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter("d:\\phrase_table.txt");
+		LatticeArgs cliArgs = new LatticeArgs();
+		new JCommander(cliArgs, args);
+		PhraseTableReaderWriter ptrw = new PhraseTableReaderWriter(cliArgs.phraseTableFile());
 		Map<String, Multiset<Pair<String, Double>>> map = ptrw.read();
-
-		LatticeGeneratorFileWriter lg = new LatticeGeneratorFileWriter(input, map, "d:\\lattice.txt");
-
+		LatticeGeneratorFileWriter lg = new LatticeGeneratorFileWriter(cliArgs.input(), map, cliArgs.outputFile());
 		lg.createLaticeFile();
 	}
 

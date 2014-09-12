@@ -13,10 +13,12 @@ public class TranslatorArgs {
 	private String phraseTableFile;
 	@Parameter(names = { "-i", }, description = "input file to translate")
 	private String fileToTranslate;
-	@Parameter(names = { "-o", }, description = "output file (if empty will print to stdout")
+	@Parameter(names = { "-o", }, description = "output file (if empty will print to stdout)")
 	private String outputFile;
 	@Parameter(names = { "-m", }, description = "model file")
 	private String modelFile;
+	@Parameter(names = { "--latticeFile", }, description = "lattice file")
+	private String latticeFile;
 	@Parameter(names = { "--lambdaTranslation", }, description = "lambda of translation")
 	private double lambdaTranslation = 0.5;
 	@Parameter(names = { "--lambdaLanguageModel", }, description = "lambda of languageModel")
@@ -44,6 +46,9 @@ public class TranslatorArgs {
 	}
 	public String modelFile() {
 		return modelFile;
+	}
+	public String latticeFile() {
+		return latticeFile;
 	}
 	public void histogramPruningLimit(int histogramPruningLimit) {
 		this.histogramPruningLimit = histogramPruningLimit;

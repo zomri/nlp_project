@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import latticeGenerator.LaticeGeneratorFromFileReader;
 import latticeGenerator.LatticeGeneratorFileWriter;
 
 import org.apache.log4j.BasicConfigurator;
@@ -34,7 +35,6 @@ public class DriverOfTranslate {
 
 //	private String latticeFilename = "phrase_table.txt";
 //	private String fileToTranslate = "test set\\test.heb";
-	private PhraseTableReaderWriter ptrw;
 	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
 	private Model lm;
 	private TranslatorArgs cliArgs = new TranslatorArgs();
@@ -48,9 +48,11 @@ public class DriverOfTranslate {
 	
 	private void prepareMap() {
 		Stopwatch sw = Stopwatch.createStarted();
+		if (null != cliArgs.latticeFile()) {
+			return;
+		}
 		if (null != cliArgs.phraseTableFile()) {
-			ptrw = new PhraseTableReaderWriter(cliArgs.phraseTableFile());
-			phraseTableMap = ptrw.read();
+			phraseTableMap = new PhraseTableReaderWriter(cliArgs.phraseTableFile()).read();
 	//		SerializationUtils.toFile("binary_map", phraseTableMap);
 		} else if (new File("binary_map").exists()) {
 			phraseTableMap = SerializationUtils.fromFile("binary_map");
@@ -86,18 +88,26 @@ public class DriverOfTranslate {
 		prepareModel();
 	}
 	private void doTheWork(List<String> origin) {
-		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, null).createLaticeFile();
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = readLatticeFile(origin);
 		LatticePhraseTranslator phraseTranslator = new LatticePhraseTranslator();
 		updateTranslator(phraseTranslator, readLattice, origin);
 		StackDecoder stackDecoder = new StackDecoder(origin, phraseTranslator,lm, cliArgs);
-		List<String> translate;
+		Pair<Double, List<String>> translate;
 		try {
-			translate = stackDecoder.translate();
-			writeToFile(Joiner.on(" ").join(translate));
+			translate = stackDecoder.translateWithScore();
+			writeToFile(translate.first() + " " + Joiner.on(" ").join(translate.second()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			writeToFile("error");
 		}
+	}
+
+	private Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLatticeFile(List<String> origin) {
+		if (null != cliArgs.latticeFile()) {
+			return new LaticeGeneratorFromFileReader(cliArgs.latticeFile()).readLattice();
+		}
+		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice = new LatticeGeneratorFileWriter(Joiner.on(" ").join(origin), phraseTableMap, null).createLaticeFile();
+		return readLattice;
 	}
 	
 	private void writeToFile(String line) {

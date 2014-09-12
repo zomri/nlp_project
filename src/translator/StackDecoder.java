@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Joiner;
 
+import edu.stanford.nlp.util.Pair;
 import ex1.common.CorpusData;
 import ex1.common.Model;
 import ex1.eval.CorpusReaderPredicate;
@@ -38,10 +39,12 @@ public class StackDecoder {
 		lambdaTrans = cliArgs.lambdaTranslation();
 		lambdaLm = cliArgs.lambdaLanguageModel();
 	}
-
 	public List<String> translate(){
+		return translateWithScore().second();
+	}
+	public Pair<Double, List<String>> translateWithScore() {
 		if (null == origin || origin.isEmpty()) {
-			return Lists.newArrayList();
+			return new Pair<Double, List<String>>(0.0, Lists.<String>newArrayList());
 		}
 		init();
 		for (int stackIndex = 0; stackIndex < stacks.size(); stackIndex++) {
@@ -153,9 +156,9 @@ public class StackDecoder {
 		return $;
 	}
 
-	private List<String> getTranslationFromStacks() {
-		List<String> bestTranslation = null;
-		List<String> translation = null;
+	private Pair<Double, List<String>> getTranslationFromStacks() {
+		Pair<Double, List<String>> bestTranslation = null;
+		Pair<Double, List<String>> translation = null;
 		Double maxScore = Double.NEGATIVE_INFINITY;
 		
 		if (0 == Double.compare(0, lambdaLm)) {
@@ -167,7 +170,7 @@ public class StackDecoder {
 			
 			CorpusReaderPredicate linePredicate = new CorpusReaderPredicate(
 					model.n());
-			new LineReader(Joiner.on(" ").join(translation), linePredicate).read();
+			new LineReader(Joiner.on(" ").join(translation.second()), linePredicate).read();
 			CorpusData corpusData = linePredicate.getCorpusData();
 			model.setTestCorpusSize(corpusData.tuples().size());
 			
@@ -181,8 +184,9 @@ public class StackDecoder {
 		return bestTranslation;
 	}
 	
-	private List<String> getTranslationFromStacks(Hypothesis hypo) {
+	private Pair<Double, List<String>> getTranslationFromStacks(Hypothesis hypo) {
 		List<String> translation = Lists.newArrayList();
+		double score = hypo.totalScore();
 		
 		boolean finished = false;
 		while (!finished){
@@ -195,7 +199,7 @@ public class StackDecoder {
 				hypo = prev.get(0);
 			}
 		}
-		return translation;
+		return new Pair<Double, List<String>>(score, translation);
 	}
-	
+
 }

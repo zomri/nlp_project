@@ -1,5 +1,5 @@
 to compile and create jars copy all ant scripts to the project's main dir
-then run build.xml
+run build.xml to compile the project
 to export jars run the ant file with the name of the jar.
 
 below are instructions for the execution  and build from sources of each step:
@@ -15,24 +15,25 @@ $ giza_script.sh
 
 phrase alignment and phrase table:
 ==================================
-$
+$ java -jar phrase_alignment.jar <a3_file_heb2eng> <a3_file_eng2heb> <output_file>
+example: java -jar phrase_alignment.jar bible.eng.truncate_bible.heb.truncate.A3 bible.heb.truncate_bible.eng.truncate.A3 phrase_table.txt
 
 language model:
 ===============
 english tokenizing (with stanford postagger):
 $ java -jar english_tokenizer.jar -i <input_file> -o <output_file>
-building the language model:
-$ 
+building the language model (from ex1):
+$ java -jar lm.jar -i <input_file> -o <output_file> -s <smooth_algorithm (ls|wb)> -lmd <lambda_number> -n <number of ngrams>
 
 
 lattice generator:
 ==================
-
+$ java -jar lattice_generator.jar -pt <phrase_table_file> -o <output_file> -i <input sentence>
 
 
 stack decoder:
 ==============
-$ java -jar translator.jar -p <phrase_table_file> -i <input_file_to_translate> [-o <output_file>] -m <language_model_file> [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>]
+$ java -jar translator.jar --latticeFile <lattice_file> -i <input_file_to_translate> [-o <output_file>] -m <language_model_file> [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>]
 if output file not supplied, it will print to stdout
 default lambda values are 0.5
 default prune stack max size is 10

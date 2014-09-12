@@ -1,6 +1,5 @@
 package ex1.common;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -97,10 +96,7 @@ public class ArpaFormatReadWrite {
 //		} catch (IOException x) {
 //		    System.err.format("IOException: %s%n", x);
 //		}
-		System.out.println("done reading " + new Date());
-		System.out.println("now parsing lines " + content.size());
 		for (int i = 0; i < content.size(); i++) {
-				System.out.println(i);
 			String line = content.get(i);
 			if (line.startsWith(NGRAM)) {
 				String[] split = line.split("=");
@@ -131,7 +127,6 @@ public class ArpaFormatReadWrite {
 				continue;
 			}
 		}
-		System.out.println(smooth + " done parsing " + new Date());
 		switch (smooth) {
 		case ls:
 			return new LsModel(n, lambda, ngrams);
@@ -146,9 +141,7 @@ public class ArpaFormatReadWrite {
 			int ngram) {
 		Map<WordTuple, WordTupleData> $ = Maps.newHashMap();
 		int i = 0;
-		System.out.println("going to work " + content.size());
 		for (String line : content) {
-			System.out.println(i++);
 			List<String> split = Splitter.on(SEPERATOR).splitToList(line);
 			WordTupleData wordTupleData = new WordTupleData(
 					Double.valueOf(split.get(0)), Integer.valueOf(split
