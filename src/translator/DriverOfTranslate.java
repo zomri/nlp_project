@@ -1,11 +1,18 @@
 package translator;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import latticeGenerator.LatticeGeneratorFileWriter;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.SimpleLayout;
+
 import phrase_table.PhraseTableReaderWriter;
 
 import com.beust.jcommander.JCommander;
@@ -15,6 +22,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Multiset;
+import common.ExceptionUtils;
 import common.SerializationUtils;
 import common.TextFileUtils;
 
@@ -30,8 +38,11 @@ public class DriverOfTranslate {
 	private Map<String, Multiset<Pair<String,Double>>> phraseTableMap;
 	private Model lm;
 	private TranslatorArgs cliArgs = new TranslatorArgs();
+	private OutputStreamWriter writer;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		args = new String[]{"-o","output_file","-i","test set\\test.heb"};
+		BasicConfigurator.configure(new FileAppender(new SimpleLayout(), "log_file"));
 		new DriverOfTranslate().translate(args);
 	}
 	
@@ -70,6 +81,7 @@ public class DriverOfTranslate {
 
 	private void init(String[] args) {
 		new JCommander(cliArgs, args);
+		writeToFile("parameters are " + cliArgs);
 		prepareMap();
 		prepareModel();
 	}
@@ -81,12 +93,28 @@ public class DriverOfTranslate {
 		List<String> translate;
 		try {
 			translate = stackDecoder.translate();
-			System.out.println(Joiner.on(" ").join(translate));
+			writeToFile(Joiner.on(" ").join(translate));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("error");
+			writeToFile("error");
 		}
-//		System.out.println(origin + "=>" + translate);
+	}
+	
+	private void writeToFile(String line) {
+		if (cliArgs.outputFile() == null) {
+			System.out.println(line);
+		}
+		else {
+			if (null == writer) {
+				writer = TextFileUtils.getWriter(cliArgs.outputFile());
+			}
+			try {
+				writer.write(line + "\n");
+				writer.flush();
+			} catch (IOException e) {
+				throw ExceptionUtils.asUnchecked(e);
+			}
+		}
 	}
 
 	private void updateTranslator(LatticePhraseTranslator phraseTranslator,
