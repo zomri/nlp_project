@@ -81,7 +81,7 @@ public class DriverOfTranslate {
 
 	private void init(String[] args) {
 		new JCommander(cliArgs, args);
-//		writeToFile("parameters are " + cliArgs);
+		System.out.println("parameters are " + cliArgs);
 		prepareMap();
 		prepareModel();
 	}
