@@ -1,6 +1,6 @@
 package translator;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -69,7 +69,9 @@ public class StackDecoderTest {
 		assertEquals(Lists.newArrayList("ab"), tested.translate());
 	}
 	private void createdTested() {
-		tested = new StackDecoder(origin, phraseTranslator,null);
+		TranslatorArgs cliArgs = new TranslatorArgs();
+		cliArgs.histogramPruningLimit(3);
+		tested = new StackDecoder(origin, phraseTranslator,null, cliArgs);
 	}
 
 	//test with scoring algorithm from model
