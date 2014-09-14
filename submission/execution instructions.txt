@@ -1,6 +1,9 @@
 Directory on nova:
 /specific/a/home/cc/students/cs/omrizomet/NLP/project
 
+Source code can also be found on Git:
+https://github.com/zomri/nlp_project/
+
 to compile and create jars copy all ant scripts to the project's main dir
 run build.xml to compile the project
 to export jars run the ant file with the name of the jar.
