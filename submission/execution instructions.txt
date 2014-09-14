@@ -1,3 +1,6 @@
+Directory on nova:
+/specific/a/home/cc/students/cs/omrizomet/NLP/project
+
 to compile and create jars copy all ant scripts to the project's main dir
 run build.xml to compile the project
 to export jars run the ant file with the name of the jar.
@@ -11,9 +14,10 @@ $ java -jar cleaner.jar [-n <max_number_of_tokens>] file1 file2 ...
   
 word alignment:
 ===============
-$ giza_script.sh
-* needs to have the bible.eng and bible.heb file in the directory
-* needs to have the giza-pp folder in the directory
+$ ./giza_script.sh
+* Must have the truncated files from the cleaning be called: "bible.eng.truncate" and "bible.heb.truncate"
+* The files must reside in the same directory of the script
+* Must have the giza-pp/ folder in the same directory of the script
 
 phrase alignment and phrase table:
 ==================================
