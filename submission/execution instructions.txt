@@ -12,6 +12,8 @@ $ java -jar cleaner.jar [-n <max_number_of_tokens>] file1 file2 ...
 word alignment:
 ===============
 $ giza_script.sh
+* needs to have the bible.eng and bible.heb file in the directory
+* needs to have the giza-pp folder in the directory
 
 phrase alignment and phrase table:
 ==================================

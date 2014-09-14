@@ -1,4 +1,3 @@
-parameters are TranslatorArgs [fileToTranslate=test set\test.heb, outputFile=test set\out_01_09_UNK.txt, lambdaTranslation=0.1, lambdaLanguageModel=0.9, histogramPruningLimit=10]
 now see? for the LORD hath chosen thee, that thou to build an house sanctuary, strong and do
 and the heathen shall know that I the LORD do sanctify Israel when my sanctuary in the midst of them for evermore.
 and as shall speak and say unto thee, the children of thy people saying, Hast thou not thou shalt tell us what these things are thee,
