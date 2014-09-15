@@ -62,6 +62,9 @@ public class TranslatorArgs {
 				+ ", lambdaLanguageModel=" + lambdaLanguageModel + ", histogramPruningLimit=" + histogramPruningLimit
 				+ "]";
 	}
+	public void lambdaLanguageModel(double lambdaLanguageModel) {
+		this.lambdaLanguageModel = lambdaLanguageModel;
+	}
 
 	
 }

@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.beust.jcommander.internal.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -112,7 +110,7 @@ public class AlignedSentenceReader {
 		
 		for (int i=0; i<size; ++i) 
 		{
-			res.put(i, Sets.newTreeSet()); //TreeSet - sorted..
+			res.put(i, Sets.<Integer>newTreeSet()); //TreeSet - sorted..
 		}
 		
 		return res;

@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/guava-17.0.jar"/>
+	<classpathentry kind="lib" path="libs/guava-17.0.jar" sourcepath="libs/guava-17.0-sources.jar"/>
 	<classpathentry kind="lib" path="libs/jcommander-1.30.jar"/>
 	<classpathentry kind="lib" path="libs/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="libs/stanford-postagger.jar"/>

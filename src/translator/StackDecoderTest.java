@@ -1,6 +1,6 @@
 package translator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -71,6 +71,7 @@ public class StackDecoderTest {
 	private void createdTested() {
 		TranslatorArgs cliArgs = new TranslatorArgs();
 		cliArgs.histogramPruningLimit(3);
+		cliArgs.lambdaLanguageModel(0);
 		tested = new StackDecoder(origin, phraseTranslator,null, cliArgs);
 	}
 

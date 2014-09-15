@@ -65,7 +65,7 @@ public class StackDecoder {
 
 	private void init() {
 		for (int i = 0; i < origin.size()+1; i++) {
-			stacks.add(new TreeSet<>());
+			stacks.add(new TreeSet<Hypothesis>());
 		}
 		stacks.get(0).add(new Hypothesis(origin.size()));
 	}
@@ -102,7 +102,7 @@ public class StackDecoder {
 	private List<Hypothesis> getAllHypothesis(Hypothesis hypothesis) {
 		List<Hypothesis> $ = Lists.newArrayList();
 		List<Boolean> coverage = hypothesis.coverage();
-		if (coverage.stream().allMatch(x -> x)) {
+		if (allCovered(coverage)) {
 			return Lists.newArrayList();
 		}
 		List<List<String>> wordsList = pickNextOrigins(coverage);
@@ -119,6 +119,14 @@ public class StackDecoder {
 		return $;
 	}
 
+	private boolean allCovered(List<Boolean> coverage) {
+		for (Boolean boolean1 : coverage) {
+			if (!boolean1) {
+				return false;
+			}
+		}
+		return true;
+	}
 	private List<Boolean> calcNewCoverage(List<Boolean> coverage, List<String> words) {
 		List<Boolean> $ = Lists.newArrayList(coverage);
 		for (String word : words) {

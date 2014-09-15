@@ -33,9 +33,19 @@ public class Hypothesis implements Comparable<Hypothesis>{
 	
 	public double totalScore() {
 		if (null == totalScore) {
-			totalScore = score + prev.stream().mapToDouble(x->x.totalScore()).max().orElse(0);
+			totalScore = score + maxOnPrev();
 		}
 		return totalScore;
+	}
+
+	private double maxOnPrev() {
+		double $ = 0;
+		for (Hypothesis h : prev) {
+			if (h.totalScore() > $) {
+				$ = h.totalScore();
+			}
+		}
+		return $ ;
 	}
 
 	public List<Hypothesis> prev() {

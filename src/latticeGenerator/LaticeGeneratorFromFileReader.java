@@ -25,7 +25,7 @@ public class LaticeGeneratorFromFileReader {
 	}
 
 	public Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> readLattice() {
-		Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> $ = Maps.newHashMap();
+		final Map<Pair<Integer, Integer>, Multiset<Pair<List<String>, Double>>> $ = Maps.newHashMap();
 		Predicate<String> linePredicate = new Predicate<String>() {
 			@Override
 			public boolean apply(String line) {
@@ -36,7 +36,8 @@ public class LaticeGeneratorFromFileReader {
 					matcher.find();
 					span = new Pair<Integer, Integer>(Integer.valueOf(matcher.group(1)), Integer.valueOf(matcher
 							.group(2)));
-					$.put(span, HashMultiset.create());
+					HashMultiset<Pair<List<String>,Double>> create = HashMultiset.create();
+					$.put(span, create);
 				} else {
 					List<String> lineSplitted = Splitter.on("\t").splitToList(line);
 					double prob = Double.parseDouble(lineSplitted.get(lineSplitted.size() - 1));

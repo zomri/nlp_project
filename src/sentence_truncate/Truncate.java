@@ -45,8 +45,11 @@ public class Truncate {
 			filesWriters.add(TextFileUtils.getWriter(outFile));
 		}
 		for (int i = 0; i < filesContent.get(0).size(); i++) {
-			int j = i;
-			if (filesContent.stream().anyMatch(content -> content.get(j).split(" ").length > cliArgs.maxTokens)) {
+			int j = i;//j=lineNumber
+//			if (filesContent.stream().anyMatch(content -> content.get(j).split(" ").length > cliArgs.maxTokens)) {
+//				droppedLines++;
+//			} else {
+			if (anyMatch(filesContent, j, cliArgs)) {
 				droppedLines++;
 			} else {
 				for (int k = 0; k < filesWriters.size(); k++) {
@@ -58,12 +61,23 @@ public class Truncate {
 				}
 			}
 		}
-		filesWriters.stream().forEach(w->{try {
-			w.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}});
+		for (OutputStreamWriter outputStreamWriter : filesWriters) {
+			try {
+				outputStreamWriter.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		System.out.println("dropped " + droppedLines);
+	}
+
+	private static boolean anyMatch(List<List<String>> filesContent, int j, TruncateArgs cliArgs) {
+		for (List<String> lines : filesContent) {
+			if (lines.get(j).split(" ").length > cliArgs.maxTokens) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

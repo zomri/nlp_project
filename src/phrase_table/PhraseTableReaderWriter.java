@@ -69,7 +69,7 @@ public class PhraseTableReaderWriter {
 
 		Path file = Paths.get(filename);
 		int i = 0;
-		try (BufferedReader reader = Files.newBufferedReader(file)) {
+		try (BufferedReader reader = Files.newBufferedReader(file, Charset.defaultCharset())) {
 
 			String line = "";
 			while ((line = reader.readLine()) != null) 
