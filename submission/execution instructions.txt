@@ -42,10 +42,11 @@ $ java -jar lattice_generator.jar -pt <phrase_table_file> -o <output_file> -i <i
 
 stack decoder:
 ==============
-$ java -jar translator.jar --latticeFile <lattice_file> -i <input_file_to_translate> [-o <output_file>] -m <language_model_file> [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>]
+$ java -jar translator.jar --latticeFile <lattice_file> -i <input_file_to_translate> [-o <output_file>] -m <language_model_file> [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>] [--sentence sentence]
 if output file not supplied, it will print to stdout
 default lambda values are 0.5
 default prune stack max size is 10
+input can be given by file (-i) or from command line (--sentence)
 
 
 

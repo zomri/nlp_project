@@ -71,14 +71,19 @@ public class DriverOfTranslate {
 	}
 	private void translate(String[] args) {
 		init(args);
-		Predicate<String> linePredicate = new Predicate<String>(){
-			@Override
-			public boolean apply(String line) {
-				List<String> origin = Splitter.on(" ").splitToList(line);
-				doTheWork(origin);
-				return true;
-			}};
-		TextFileUtils.getContentByLines(cliArgs.fileToTranslate(), linePredicate);
+		if (null == cliArgs.fileToTranslate()) {
+			doTheWork(cliArgs.words());
+		}
+		else {
+			Predicate<String> linePredicate = new Predicate<String>(){
+				@Override
+				public boolean apply(String line) {
+					List<String> origin = Splitter.on(" ").splitToList(line);
+					doTheWork(origin);
+					return true;
+				}};
+			TextFileUtils.getContentByLines(cliArgs.fileToTranslate(), linePredicate);
+		}
 	}
 
 	private void init(String[] args) {

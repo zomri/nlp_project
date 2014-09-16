@@ -3,6 +3,7 @@ package translator;
 import java.util.List;
 
 import com.beust.jcommander.Parameter;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 public class TranslatorArgs {
@@ -11,6 +12,8 @@ public class TranslatorArgs {
 	public List<String> parameters = Lists.newArrayList();
 	@Parameter(names = { "-p", }, description = "phrase table file")
 	private String phraseTableFile;
+	@Parameter(names = { "--sentence", }, description = "sentence to translate")
+	private String sentence;
 	@Parameter(names = { "-i", }, description = "input file to translate")
 	private String fileToTranslate;
 	@Parameter(names = { "-o", }, description = "output file (if empty will print to stdout)")
@@ -53,17 +56,19 @@ public class TranslatorArgs {
 	public void histogramPruningLimit(int histogramPruningLimit) {
 		this.histogramPruningLimit = histogramPruningLimit;
 	}
-	@Override
-	public String toString() {
-		return "TranslatorArgs [" + (phraseTableFile != null ? "phraseTableFile=" + phraseTableFile + ", " : "")
-				+ (fileToTranslate != null ? "fileToTranslate=" + fileToTranslate + ", " : "")
-				+ (outputFile != null ? "outputFile=" + outputFile + ", " : "")
-				+ (modelFile != null ? "modelFile=" + modelFile + ", " : "") + "lambdaTranslation=" + lambdaTranslation
-				+ ", lambdaLanguageModel=" + lambdaLanguageModel + ", histogramPruningLimit=" + histogramPruningLimit
-				+ "]";
-	}
 	public void lambdaLanguageModel(double lambdaLanguageModel) {
 		this.lambdaLanguageModel = lambdaLanguageModel;
+	}
+	public List<String> words() {
+		return Splitter.on(" ").splitToList(sentence);
+	}
+	@Override
+	public String toString() {
+		return "TranslatorArgs [parameters=" + parameters + ", phraseTableFile=" + phraseTableFile + ", sentence="
+				+ sentence + ", fileToTranslate=" + fileToTranslate + ", outputFile=" + outputFile + ", modelFile="
+				+ modelFile + ", latticeFile=" + latticeFile + ", lambdaTranslation=" + lambdaTranslation
+				+ ", lambdaLanguageModel=" + lambdaLanguageModel + ", histogramPruningLimit=" + histogramPruningLimit
+				+ "]";
 	}
 
 	
