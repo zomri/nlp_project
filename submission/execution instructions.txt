@@ -45,14 +45,15 @@ stack decoder:
 Single sentence translation:
 $ java -jar translator.jar --latticeFile <lattice_file> --sentence '<sentence>' -m <language_model_file>  [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>] 
 
-Multiple sentence translation:
+Multiple sentence translation (notice phrase_table_file is needed to create lattice per sentence):
 $ java -jar translator.jar -i <input_file_to_translate> -p <phrase_table_file> -m <language_model_file> [-o <output_file>] [--lambdaTranslation <number>] [--lambdaLanguageModel <number>] [--histogramPruningLimit <number>]
-
 
 if output file not supplied, it will print to stdout
 default lambda values are 0.5
 default prune stack max size is 10
-input can be given by file (-i) or from command line (--sentence)
+input can be given by file (-i) or from command line (--sentence):
+- with file (-i), the phrase_table_file parameter (-p) is mandatory.
+- with command line, the lattice file (--latticeFile) parameter is mandatory.
 
 
 
